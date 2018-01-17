@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0080FF</color>
+    <color name="colorPrimaryDark">#0060FF</color>
+    <color name="colorAccent">#0080FF</color>
+
+    <!--DeviceMonitor Colors-->
+    <!--<color name="accent_normal_color">#143a5a</color>-->
+    <color name="accent_normal_color">#0080FF</color>
+    <color name="accent_light_color">#40A0FF</color>
+    <color name="accent_dark_color">#0060FF</color>
+    <color name="accent_hover_color">#200080FF</color>
+
+    <!--Foreground Colors-->
+    <color name="foreground_normal_color">#333333</color>
+    <color name="foreground_light_color">#888888</color>
+    <color name="foreground_normal_opposite_color">#fff</color>
+
+    <!--Status Colors-->
+    <color name="statusGreen">#19b419</color>
+    <color name="statusOrange">#FFFF8B00</color>
+    <color name="statusRed">#ff0000</color>
+
+    <!--Status Hover Colors-->
+    <color name="statusGreenHover">#2019b419</color>
+    <color name="statusOrangeHover">#10FF8B00</color>
+    <color name="statusRedHover">#10ff0000</color>
+
+    <color name="disabled">#cccccc</color>
+    <color name="disabled_text">#888888</color>
+
+    <color name="statusbar_color">#0066cc</color>
+    <color name="toolbar_color">#0080FF</color>
+    <color name="toolbar_title_color">#FFFFFF</color>
+
+    <color name="border">#cccccc</color>
+
+    <color name="text">#000000</color>
+    <color name="text_light">#888888</color>
+    <color name="text_alternate">#FFFFFF</color>
+
+    <color name="background">#ffffff</color>
+</resources>

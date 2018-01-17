@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="90dp">
+
+    <FrameLayout
+        android:layout_width="35dp"
+        android:layout_height="match_parent"
+        android:background="@color/disabled"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:id="@+id/StatusIndicator">
+
+        <ImageView
+            android:layout_width="25sp"
+            android:layout_height="match_parent"
+            android:id="@+id/StatusIcon"
+            android:src="@drawable/power_01_white"
+            />
+    </FrameLayout>
+
+    <View
+        android:layout_width="1sp"
+        android:layout_height="match_parent"
+        android:background="@color/border"
+        android:layout_alignParentTop="true"
+        android:id="@+id/StatusIndicatorBorder"
+        android:layout_toRightOf="@id/StatusIndicator"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/StatusIndicatorBorder"
+        android:layout_toEndOf="@id/StatusIndicatorBorder"
+        android:paddingLeft="10dp"
+        android:layout_marginRight="40dp"
+        android:background="#fff">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/DescriptionLayout"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:id="@+id/Description"
+                android:textColor="@color/text"
+                android:ellipsize="marquee"
+                android:text="[Description]"
+                android:textSize="14sp"
+                android:layout_alignParentTop="false"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="[Device ID]"
+                android:id="@+id/DeviceId"
+                android:textSize="14sp"
+                android:textColor="@color/text"
+                android:layout_alignTop="@id/Description"
+                android:layout_toRightOf="@id/Description"
+                android:layout_toEndOf="@id/Description"
+                android:layout_marginLeft="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="[Manufacturer]"
+                android:textSize="16sp"
+                android:id="@+id/Manufacturer"
+                android:layout_below="@id/Description"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="[Model]"
+                android:textSize="16sp"
+                android:id="@+id/Model"
+                android:layout_toRightOf="@id/Manufacturer"
+                android:layout_toEndOf="@id/Manufacturer"
+                android:layout_alignTop="@id/Manufacturer"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="[Serial]"
+                android:textSize="12sp"
+                android:id="@+id/Serial"
+                android:layout_below="@+id/Manufacturer"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/text_light" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/DescriptionLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/StatusLayout"
+            android:layout_marginTop="5sp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="[Device Status]"
+                android:id="@+id/DeviceStatus"
+                android:textSize="14sp"
+                android:textColor="@color/text"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentEnd="false"
+                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="00:00"
+                android:id="@+id/ProductionStatusTimer"
+                android:textSize="14sp"
+                android:textColor="@color/text"
+
+                android:layout_toRightOf="@id/DeviceStatus"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/OeeLayout"
+            android:layout_alignBaseline="@id/StatusLayout"
+            android:layout_alignBottom="@id/StatusLayout"
+            android:layout_toRightOf="@id/StatusLayout"
+            android:layout_toEndOf="@id/StatusLayout"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="OEE"
+                android:textSize="14sp"
+                android:id="@+id/textView9"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/text_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="[OEE]"
+
+                android:id="@+id/OEE"
+                android:textColor="@color/text"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_toRightOf="@id/textView9"
+                android:layout_toEndOf="@id/textView9"
+                android:layout_marginLeft="5dp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/border"
+        android:id="@+id/BottomBorder"/>
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:id="@+id/Arrow"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/carrot_right_01"
+        android:alpha="0.25"
+        android:layout_marginRight="5dp"
+        android:visibility="visible"/>
+</RelativeLayout>
