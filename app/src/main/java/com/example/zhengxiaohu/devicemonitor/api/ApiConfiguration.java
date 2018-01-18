@@ -12,19 +12,20 @@ import android.net.Uri;
 public class ApiConfiguration {
 
     public static Context context;
-    private String s;
 
     public static Uri apiHost=Uri.parse("http://192.168.43.161:8015/");
+    public static int apiUpdateInterval=5000;
 //    public static Uri apiHost=Uri.parse("https://api.trakhound.com/");
-
 
     public String host;
     public String path;
 
     public static String getSaveHost(){
+
         if (context!=null){
-            SharedPreferences prefs=context.getSharedPreferences("org.trakhound.www.trakhound",Context.MODE_PRIVATE);
+            SharedPreferences prefs=context.getSharedPreferences("ApiServerAndUpdateInterval",Context.MODE_PRIVATE);
             if (prefs!=null){
+
                 return prefs.getString("api_host",null);
             }
         }
@@ -34,16 +35,40 @@ public class ApiConfiguration {
     public static void setSavedHost(String host) {
 
         if (context != null) {
-            SharedPreferences prefs = context.getSharedPreferences("org.trakhound.www.trakhound", Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences("ApiServerAndUpdateInterval", Context.MODE_PRIVATE);
             if (prefs != null) prefs.edit().putString("api_host", host).apply();
         }
     }
+
+    public static int getUpdateInterval(){
+
+        if (context!=null){
+
+            SharedPreferences preferences=context.getSharedPreferences("ApiServerAndUpdateInterval",Context.MODE_PRIVATE);
+            if (preferences!=null){
+                return preferences.getInt("update_interval",5000);
+            }
+        }
+        return -1;
+    }
+
+    public static void setUpdateInterval(int updateInterval){
+
+        if (context!=null){
+
+            SharedPreferences preferences=context.getSharedPreferences("ApiServerAndUpdateInterval",Context.MODE_PRIVATE);
+            if (preferences!=null){
+                preferences.edit().putInt("update_interval",updateInterval).apply();
+            }
+        }
+    }
+
 
     public static String getSavedPath() {
 
         if (context != null) {
 
-            SharedPreferences prefs = context.getSharedPreferences("org.trakhound.www.trakhound", Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences("ApiServerAndUpdateInterval", Context.MODE_PRIVATE);
             if (prefs != null) {
 
                 return prefs.getString("api_path", null);
@@ -56,7 +81,7 @@ public class ApiConfiguration {
     public static void setSavedPath(String path) {
 
         if (context != null) {
-            SharedPreferences prefs = context.getSharedPreferences("org.trakhound.www.trakhound", Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences("ApiServerAndUpdateInterval", Context.MODE_PRIVATE);
             if (prefs != null) prefs.edit().putString("api_path", path).apply();
         }
     }

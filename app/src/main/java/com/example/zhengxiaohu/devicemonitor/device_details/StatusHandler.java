@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 
 import com.example.zhengxiaohu.devicemonitor.DeviceDetails;
+import com.example.zhengxiaohu.devicemonitor.api.ApiConfiguration;
 import com.example.zhengxiaohu.devicemonitor.device_list.ListItem;
 
 /**
@@ -78,7 +79,7 @@ public class StatusHandler implements Runnable {
                     }
                 }
 
-                Thread.sleep(5000);
+                Thread.sleep(ApiConfiguration.apiUpdateInterval);
             }
             catch (InterruptedException ex) {  }
         }

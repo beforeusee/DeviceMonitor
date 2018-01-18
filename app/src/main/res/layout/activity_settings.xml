@@ -25,7 +25,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="[Api Server]"
+            android:text="http://192.168.43.161:8015/"
             android:textSize="18sp"
             android:id="@+id/ApiServer"
             android:gravity="center_horizontal"
@@ -52,7 +52,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="[Update Interval]"
+            android:text="5000"
             android:textSize="18sp"
             android:id="@+id/UpdateInterval"
             android:gravity="center_horizontal"

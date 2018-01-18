@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,9 +20,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.zhengxiaohu.devicemonitor.api.ApiConfiguration;
 import com.example.zhengxiaohu.devicemonitor.device_list.*;
 import com.example.zhengxiaohu.devicemonitor.device_details.GetDeviceStatus;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +39,13 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
 
     private ListView deviceListView;
     private ListAdapter listAdapter;
+
+    private static final String TAG = "DeviceList";
+
+    NavigationView navigationView;
+    View headerView;
+    TextView apiServerTextView;
+    TextView updateIntervalTextView;
 
     Thread statusThread;
     Context context;
@@ -70,6 +85,9 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
         //setup navigation drawer
         setNavigationDrawer();
 
+        //register EventBus
+        EventBus.getDefault().register(this);
+
         //Load Devices
         ListItem[] listItems=MyApplication.ListItems;
         if (listItems==null){
@@ -81,12 +99,28 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (statusThread!=null){
             statusThread.interrupt();
         }
+        super.onStop();
     }
 
+    @Override
+    protected void onDestroy() {
+
+        //unregister Event
+        EventBus.getDefault().unregister(this);
+        Log.d(TAG, "onStop: DeviceList unregister EventBut");
+
+        super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event){
+
+        Log.d(TAG, "onMessageEvent: apiServer="+event.apiServer+" updateInterval="+event.updateInterval);
+        setHeaderView();
+    }
     /**
      * 加载设备列表
      */
@@ -323,9 +357,58 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView= (NavigationView) findViewById(R.id.nav_view);
+        navigationView= (NavigationView) findViewById(R.id.nav_view);
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        headerView=navigationView.getHeaderView(0);
+
+        if (headerView!=null){
+
+            ApiConfiguration.context=this;
+            //load Api Server
+            String apiServer=ApiConfiguration.getSaveHost();
+            if (apiServer!=null){
+
+                apiServerTextView= (TextView) headerView.findViewById(R.id.ApiServer);
+                if (apiServerTextView!=null){
+                    apiServerTextView.setText(apiServer);
+                }
+            }
+
+//            load Update Interval
+            int updateInterval=ApiConfiguration.getUpdateInterval();
+            if (updateInterval>=0){
+
+                updateIntervalTextView= (TextView) headerView.findViewById(R.id.UpdateInterval);
+                if (updateIntervalTextView!=null){
+                    updateIntervalTextView.setText(String.valueOf(updateInterval));
+                }
+            }
+        }
+
+    }
+
+    /**
+     * set Api Server and Update Interval
+     */
+    private void setHeaderView(){
+
+        ApiConfiguration.context=this;
+        //load Api Server
+        String apiServer=ApiConfiguration.getSaveHost();
+        if (apiServer!=null){
+
+                apiServerTextView.setText(apiServer);
+        }
+
+//            load Update Interval
+        int updateInterval=ApiConfiguration.getUpdateInterval();
+        if (updateInterval>=0){
+
+            updateIntervalTextView.setText(String.valueOf(updateInterval));
+        }
+
     }
 
     @Override

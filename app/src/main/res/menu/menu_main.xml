@@ -5,8 +5,9 @@
     <item
         android:id="@+id/action_refresh"
         android:orderInCategory="100"
-        android:showAsAction="always"
+        app:showAsAction="always"
         android:icon="@drawable/refresh_01"
-        android:title="刷新"
+        android:title="Refresh"
+        android:foreground="#333"
         />
 </menu>
