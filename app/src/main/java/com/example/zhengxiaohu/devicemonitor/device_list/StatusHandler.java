@@ -32,23 +32,16 @@ public class StatusHandler implements Runnable {
             {
                 boolean connected = isNetworkConnected();
 
-                /*
+
                 // Only run if connected to Wifi or Ethernet
                 if (connected) {
 
-                    UserConfiguration user = MyApplication.User;
-                    //Device[] devices = MyApplication.Devices;
+                    DeviceStatus[] statuses = DeviceStatus.get();
+                    if (statuses != null) {
 
-                    // if (user != null && devices != null) {
-                    if (user != null) {
-
-                        DeviceStatus[] statuses = DeviceStatus.get(user);
-                        if (statuses != null) {
-
-                            ((DeviceList) context).updateStatus(statuses);
-                        }
+                        ((DeviceList) context).updateStatus(statuses);
                     }
-                }*/
+                }
 
                 ((DeviceList) context).updateConnectionStatus(connected);
 
@@ -71,6 +64,7 @@ public class StatusHandler implements Runnable {
 
         boolean isWifi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
         boolean isEthernet = activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET;
+
 
         return isConnected && (isWifi || isEthernet);
     }

@@ -1,4 +1,4 @@
-package com.example.zhengxiaohu.devicemonitor.api.data;
+package com.example.zhengxiaohu.devicemonitor.api.data.machine;
 
 import org.json.JSONObject;
 
@@ -8,7 +8,9 @@ import org.json.JSONObject;
  */
 
 public class StatusInfo {
+
     public Boolean connected;
+
     public String deviceStatus;
     public String productionStatus;
     public Integer deviceStatusTimer;
@@ -23,9 +25,7 @@ public class StatusInfo {
 
             result = new StatusInfo();
 
-            int connected = json.optInt("connected");
-            if (connected > 0) result.connected = true;
-            else result.connected = false;
+            result.connected=json.optBoolean("connected");
 
             result.deviceStatus = json.optString("device_status");
             result.productionStatus = json.optString("production_status");

@@ -12,6 +12,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+
+        debug{
+            minifyEnabled false;
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -32,4 +36,7 @@ dependencies {
     compile 'com.pnikosis:materialish-progress:1.7'
     compile 'com.android.support:design:25.3.1'
     compile 'org.greenrobot:eventbus:3.1.1'
+    compile 'org.xclcharts:lib:2.4'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
 }

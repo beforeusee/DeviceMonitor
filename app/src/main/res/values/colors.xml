@@ -5,7 +5,7 @@
     <color name="colorAccent">#0080FF</color>
 
     <!--DeviceMonitor Colors-->
-    <!--<color name="accent_normal_color">#143a5a</color>-->
+    <!--<color mName="accent_normal_color">#143a5a</color>-->
     <color name="accent_normal_color">#0080FF</color>
     <color name="accent_light_color">#40A0FF</color>
     <color name="accent_dark_color">#0060FF</color>
@@ -40,4 +40,14 @@
     <color name="text_alternate">#FFFFFF</color>
 
     <color name="background">#ffffff</color>
+
+    <color name="dark_white">#EEEFF2</color>
+    <color name="black">#333333</color>
+    <color name="green">#008000</color>
+    <color name="orange">#FF9900</color>
+    <color name="light1_blue">#9DD2E1</color>
+    <color name="light_green">#7BEA68</color>
+    <color name="white">#FFFFFF</color>
+    <color name="foreground_normal">#888</color>
+
 </resources>

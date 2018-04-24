@@ -37,148 +37,84 @@
         android:layout_marginRight="40dp"
         android:background="#fff">
 
-        <RelativeLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/DescriptionLayout"
-            android:layout_marginTop="5dp">
+            android:id="@+id/Address"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/text_light"
+            android:ellipsize="marquee"
+            android:text="[Address]"
+            android:textSize="12sp"
+            android:layout_alignParentTop="false"
+            android:layout_marginTop="2dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="18dp"
-                android:id="@+id/Description"
-                android:textColor="@color/text"
-                android:ellipsize="marquee"
-                android:text="[Description]"
-                android:textSize="14sp"
-                android:layout_alignParentTop="false"
-                android:layout_marginTop="2dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="18dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="[Device ID]"
-                android:id="@+id/DeviceId"
-                android:textSize="14sp"
-                android:textColor="@color/text"
-                android:layout_alignTop="@id/Description"
-                android:layout_toRightOf="@id/Description"
-                android:layout_toEndOf="@id/Description"
-                android:layout_marginLeft="10dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="[Manufacturer]"
-                android:textSize="16sp"
-                android:id="@+id/Manufacturer"
-                android:layout_below="@id/Description"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/text"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="[Model]"
-                android:textSize="16sp"
-                android:id="@+id/Model"
-                android:layout_toRightOf="@id/Manufacturer"
-                android:layout_toEndOf="@id/Manufacturer"
-                android:layout_alignTop="@id/Manufacturer"
-                android:layout_marginLeft="5dp"
-                android:textColor="@color/text"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="[Serial]"
-                android:textSize="12sp"
-                android:id="@+id/Serial"
-                android:layout_below="@+id/Manufacturer"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/text_light" />
-        </RelativeLayout>
-
-        <RelativeLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/DescriptionLayout"
+            android:text=":"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:id="@+id/Colon"
+            android:textColor="@color/text_light"
+            android:layout_alignTop="@id/Address"
+            android:layout_toRightOf="@id/Address"
+            android:layout_toEndOf="@id/Address"
+            android:layout_marginLeft="2dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[Port]"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/Port"
+            android:textSize="12sp"
+            android:textColor="@color/text_light"
+            android:layout_alignTop="@id/Colon"
+            android:layout_toRightOf="@id/Colon"
+            android:layout_toEndOf="@id/Colon"
+            android:layout_marginLeft="2dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="[Name]"
+            android:textSize="16sp"
+            android:id="@+id/Name"
+            android:layout_below="@id/Address"
+            android:layout_marginTop="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:id="@+id/StatusLayout"
-            android:layout_marginTop="5sp">
+            android:textColor="@color/text"
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="[Device Status]"
-                android:id="@+id/DeviceStatus"
-                android:textSize="14sp"
-                android:textColor="@color/text"
-                android:layout_alignParentRight="false"
-                android:layout_alignParentEnd="false"
-                android:layout_centerVertical="true"
-                android:layout_alignParentTop="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="00:00"
-                android:id="@+id/ProductionStatusTimer"
-                android:textSize="14sp"
-                android:textColor="@color/text"
-
-                android:layout_toRightOf="@id/DeviceStatus"
-                android:layout_marginLeft="10dp"
-                android:layout_centerVertical="true" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/OeeLayout"
-            android:layout_alignBaseline="@id/StatusLayout"
-            android:layout_alignBottom="@id/StatusLayout"
-            android:layout_toRightOf="@id/StatusLayout"
-            android:layout_toEndOf="@id/StatusLayout"
-            android:visibility="visible">
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="[UUID]"
+            android:textSize="12sp"
+            android:id="@+id/Uuid"
+            android:layout_below="@id/Name"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/text_light"
+            android:ellipsize="marquee"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="OEE"
-                android:textSize="14sp"
-                android:id="@+id/textView9"
-                android:layout_marginLeft="20dp"
-                android:textColor="@color/text_light"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="[OEE]"
-
-                android:id="@+id/OEE"
-                android:textColor="@color/text"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:layout_toRightOf="@id/textView9"
-                android:layout_toEndOf="@id/textView9"
-                android:layout_marginLeft="5dp" />
-
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="[Device Id]"
+            android:textSize="12sp"
+            android:id="@+id/DeviceId"
+            android:layout_below="@id/Uuid"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/text_light" />
 
     </RelativeLayout>
 

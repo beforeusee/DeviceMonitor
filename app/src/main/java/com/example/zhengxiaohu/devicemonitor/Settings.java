@@ -1,11 +1,13 @@
 package com.example.zhengxiaohu.devicemonitor;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.zhengxiaohu.devicemonitor.api.ApiConfiguration;
 
@@ -31,8 +33,9 @@ public class Settings extends AppCompatActivity implements View.OnClickListener{
     }
 
     private void initData() {
-        apiServerEditText.setText(ApiConfiguration.getSaveHost());
-        updateIntervalEditText.setText(String.valueOf(ApiConfiguration.getUpdateInterval()));
+
+        apiServerEditText.setText(ApiConfiguration.apiHost.toString());
+        updateIntervalEditText.setText(String.valueOf(ApiConfiguration.apiUpdateInterval));
     }
 
     private void initView() {
@@ -53,23 +56,27 @@ public class Settings extends AppCompatActivity implements View.OnClickListener{
             //save api server and update interval
             if (!apiServerEditText.getText().toString().trim().isEmpty()){
 
-                ApiConfiguration.setSavedHost(apiServerEditText.getText().toString());
+                ApiConfiguration.apiHost= Uri.parse(apiServerEditText.getText().toString());
+                ApiConfiguration.setSavedHost(this,apiServerEditText.getText().toString());
             }else {
 
-                // TODO: 2018/1/17 Api Server编辑框为空的提示文字
+                // Api Server编辑框为空的提示文字
+                Toast.makeText(this,"Api Server为空",Toast.LENGTH_SHORT).show();
             }
 
             if (!updateIntervalEditText.getText().toString().trim().isEmpty()){
 
                 int updateInterval=Integer.valueOf(updateIntervalEditText.getText().toString().trim());
-                ApiConfiguration.setUpdateInterval(updateInterval);
+                ApiConfiguration.apiUpdateInterval=updateInterval;
+                ApiConfiguration.setUpdateInterval(this,updateInterval);
             }else {
 
-                // TODO: 2018/1/17  更新周期编辑框为空的提示文字
+                // 更新周期编辑框为空的提示文字
+                Toast.makeText(this,"Update Interval为空",Toast.LENGTH_SHORT).show();
             }
 
-            // post message that NavigationView中的Api Server 和Update Interval
-            EventBus.getDefault().post(new MessageEvent(ApiConfiguration.getSaveHost(),String.valueOf(ApiConfiguration.getUpdateInterval())));
+            // post event message 更新NavigationView中的Api Server 和Update Interval
+            EventBus.getDefault().post(new MessageEvent(ApiConfiguration.getSaveHost(this),String.valueOf(ApiConfiguration.getUpdateInterval(this))));
 
             onBackPressed();
         }

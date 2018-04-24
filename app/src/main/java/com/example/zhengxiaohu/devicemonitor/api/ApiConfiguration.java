@@ -11,16 +11,16 @@ import android.net.Uri;
 
 public class ApiConfiguration {
 
-    public static Context context;
+    Context mContext;
 
-    public static Uri apiHost=Uri.parse("http://192.168.43.161:8015/");
-    public static int apiUpdateInterval=5000;
+    public static Uri apiHost=Uri.parse("http://192.168.43.165:8015/");
+    public static int apiUpdateInterval=500;
 //    public static Uri apiHost=Uri.parse("https://api.trakhound.com/");
 
     public String host;
     public String path;
 
-    public static String getSaveHost(){
+    public static String getSaveHost(Context context){
 
         if (context!=null){
             SharedPreferences prefs=context.getSharedPreferences("ApiServerAndUpdateInterval",Context.MODE_PRIVATE);
@@ -32,7 +32,7 @@ public class ApiConfiguration {
         return null;
     }
 
-    public static void setSavedHost(String host) {
+    public static void setSavedHost(Context context,String host) {
 
         if (context != null) {
             SharedPreferences prefs = context.getSharedPreferences("ApiServerAndUpdateInterval", Context.MODE_PRIVATE);
@@ -40,19 +40,19 @@ public class ApiConfiguration {
         }
     }
 
-    public static int getUpdateInterval(){
+    public static int getUpdateInterval(Context context){
 
         if (context!=null){
 
             SharedPreferences preferences=context.getSharedPreferences("ApiServerAndUpdateInterval",Context.MODE_PRIVATE);
             if (preferences!=null){
-                return preferences.getInt("update_interval",5000);
+                return preferences.getInt("update_interval",-1);
             }
         }
         return -1;
     }
 
-    public static void setUpdateInterval(int updateInterval){
+    public static void setUpdateInterval(Context context,int updateInterval){
 
         if (context!=null){
 
@@ -64,7 +64,7 @@ public class ApiConfiguration {
     }
 
 
-    public static String getSavedPath() {
+    public static String getSavedPath(Context context) {
 
         if (context != null) {
 
@@ -78,7 +78,7 @@ public class ApiConfiguration {
         return null;
     }
 
-    public static void setSavedPath(String path) {
+    public static void setSavedPath(Context context,String path) {
 
         if (context != null) {
             SharedPreferences prefs = context.getSharedPreferences("ApiServerAndUpdateInterval", Context.MODE_PRIVATE);

@@ -1,4 +1,4 @@
-package com.example.zhengxiaohu.devicemonitor.api.data;
+package com.example.zhengxiaohu.devicemonitor.api.data.machine;
 
 import org.json.JSONObject;
 
@@ -16,23 +16,24 @@ public class ControllerInfo {
     public String systemStatus;
     public String systemMessage;
     public String programName;
+    public String pathFeedRate;
 
     public static ControllerInfo parse(JSONObject json){
 
         ControllerInfo result=new ControllerInfo();
         if (json!=null){
-            result.availability=json.optString("availability");
-            result.emergencyStop=json.optString("emergency_stop");
+            result.availability=json.optString("available");
+            result.emergencyStop=json.optString("estop");
             result.controllerMode=json.optString("controller_mode");
-            result.executionMode=json.optString("execution_mode");
+            result.executionMode=json.optString("execution");
             result.systemStatus=json.optString("system_status");
             result.systemMessage=json.optString("system_message");
-            result.programName=json.optString("program_name");
+            result.programName=json.optString("program");
+            result.pathFeedRate=json.optString("path_feedrate");
 
             return result;
         }
         return null;
     }
-
 
 }

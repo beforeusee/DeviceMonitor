@@ -1,15 +1,30 @@
 package com.example.zhengxiaohu.devicemonitor.device_list;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.zhengxiaohu.devicemonitor.DeviceList;
+import com.example.zhengxiaohu.devicemonitor.Loading;
 import com.example.zhengxiaohu.devicemonitor.MainActivity;
 import com.example.zhengxiaohu.devicemonitor.MyApplication;
 import com.example.zhengxiaohu.devicemonitor.api.ApiConfiguration;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesLinearXInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesLinearYInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesLinearZInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotaryAInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotaryBInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotaryCInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotarySInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.ControllerInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.DescriptionInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.StatusInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.sensor.chatter.ChatterVibrationInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.sensor.electricalEnergy.ElectricalEnergyInfo;
 import com.example.zhengxiaohu.devicemonitor.api.http.Requests;
+import com.example.zhengxiaohu.devicemonitor.devices.Device;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,9 +42,9 @@ public class GetDevices extends AsyncTask<String,Void,ListItem[]> {
     private DeviceList deviceList;
     private Context context;
 
-    public GetDevices(DeviceList deviceList,Context context){
+    public GetDevices(DeviceList deviceList){
         this.deviceList=deviceList;
-        this.context=context;
+        this.context=deviceList;
     }
 
     public GetDevices(Context context){
@@ -47,7 +62,8 @@ public class GetDevices extends AsyncTask<String,Void,ListItem[]> {
         ListItem[] result=null;
 
         result=getListItems();
-        return new ListItem[0];
+
+        return result;
     }
 
     @Override
@@ -56,22 +72,39 @@ public class GetDevices extends AsyncTask<String,Void,ListItem[]> {
         MyApplication.Devices=null;
         MyApplication.ListItems=null;
 
-//        d5e321c3-2ab0-4f7b-b871-960041a36b6d/status
         MyApplication.ListItems=listItems;
 
         if (deviceList!=null){
+
             deviceList.addDevices();
+
             deviceList.hideLoading();
+
+        }else {
+            if (listItems==null){
+
+                if (context!=null){
+                    context.startActivity(new Intent(context,MainActivity.class));
+                }
+            }else {
+
+                Intent deviceListIntent=new Intent(context, DeviceList.class);
+                deviceListIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                //Open the Device List Page
+                context.startActivity(deviceListIntent);
+            }
         }
-        super.onPostExecute(listItems);
     }
 
     public static ListItem[] getListItems(){
 
         ListItem[] listItems=null;
 
-        //从Analytics Server处获取MTConnect设备的ListItem的信息的命令字，需在服务端实现相应的REST模块
-        String QUERY_INDEX="data_mobile_api/get";
+        //从AnalyticsServer处获取MTConnect设备的ListItem的信息的命令字，需在服务端实现相应的REST模块
+        String QUERY_INDEX="monitors";
 
         String url= Uri.withAppendedPath(ApiConfiguration.apiHost,QUERY_INDEX).toString();
         String response= Requests.get(url);
@@ -89,6 +122,7 @@ public class GetDevices extends AsyncTask<String,Void,ListItem[]> {
 
                 //Get Parent Array from response string
                 JSONArray jsonArray=new JSONArray(response);
+
                 return processResponseArray(jsonArray);
 
             }catch (JSONException ex){
@@ -96,9 +130,11 @@ public class GetDevices extends AsyncTask<String,Void,ListItem[]> {
                 Log.d("Exception",ex.getMessage());
 
                 MainActivity.error=true;
+                return null;
             }
+        }else {
+            return null;
         }
-        return null;
     }
     private static ListItem[] processResponseArray(JSONArray a){
 
@@ -107,25 +143,45 @@ public class GetDevices extends AsyncTask<String,Void,ListItem[]> {
             //Create ArrayList to return
             ArrayList<ListItem> result=new ArrayList<>();
 
-            try{
-                for (int i=0;i<a.length();i++){
+            for (int i=0;i<a.length();i++){
 
-                    JSONObject object=a.optJSONObject(i);
+                JSONObject json=a.optJSONObject(i);
 
-                    ListItem item=new ListItem();
-                    String device_id=object.getString("device_id");
-                    String address=object.getString("address");
-                }
-            }catch (JSONException e){
+                ListItem item=new ListItem();
 
-                Log.d("Exception",e.getMessage());
+                item.index=i;
+                item.mDescriptionInfo= DescriptionInfo.parse(json);
+                item.mControllerInfo= ControllerInfo.parse(json);
+                item.mStatusInfo= StatusInfo.parse(json);
+                item.mXInfo= AxesLinearXInfo.parse(json);
+                item.mYInfo= AxesLinearYInfo.parse(json);
+                item.mZInfo= AxesLinearZInfo.parse(json);
+                item.mSInfo= AxesRotarySInfo.parse(json);
+                item.mAInfo= AxesRotaryAInfo.parse(json);
+                item.mBInfo= AxesRotaryBInfo.parse(json);
+                item.mCInfo= AxesRotaryCInfo.parse(json);
 
-                MainActivity.error=true;
+                item.mChatterVibrationInfo= ChatterVibrationInfo.parse(json);
+                item.mElectricalEnergyInfo = ElectricalEnergyInfo.parse(json);
+
+                item.uniqueId=item.mDescriptionInfo.deviceId;
+
+                result.add(item);
             }
+
+            ListItem[] resultArray=new ListItem[result.size()];
+
+            for (int i=0;i<resultArray.length;i++){
+
+                resultArray[i]=result.get(i);
+            }
+
+            return resultArray;
+
         }else {
 
             MainActivity.error=true;
+            return null;
         }
-        return null;
     }
 }

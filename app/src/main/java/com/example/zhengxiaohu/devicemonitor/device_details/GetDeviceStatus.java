@@ -1,6 +1,7 @@
 package com.example.zhengxiaohu.devicemonitor.device_details;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.example.zhengxiaohu.devicemonitor.DeviceDetails;
@@ -60,6 +61,22 @@ public class GetDeviceStatus extends AsyncTask<String,Void,DeviceStatus> {
     @Override
     protected void onPostExecute(DeviceStatus deviceStatus) {
 
-//        deviceDetails
+        if (deviceDetails!=null){
+
+            deviceDetails.loadData();
+
+            deviceDetails.hideLoading();
+        }else {
+
+            Intent deviceDetailsIntent=new Intent(context,DeviceDetails.class);
+            deviceDetailsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            //传递device在MyApplication.Devices中的数组的索引位置
+            deviceDetailsIntent.putExtra(DeviceDetails.DEVICE_INDEX,position);
+
+            //打开Device List 界面
+            context.startActivity(deviceDetailsIntent);
+        }
+
     }
 }

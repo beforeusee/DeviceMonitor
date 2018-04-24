@@ -649,24 +649,24 @@
                             android:textSize="20sp"/>
 
                     </RelativeLayout>
-                    <!--
-                                        <View
-                                            android:layout_width="1sp"
-                                            android:layout_height="match_parent"
-                                            android:background="#ccc"
-                                            android:layout_marginLeft="20dp"
-                                            android:layout_marginRight="20dp" />-->
+<!--
+                    <View
+                        android:layout_width="1sp"
+                        android:layout_height="match_parent"
+                        android:background="#ccc"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp" />-->
 
 
-                    <!--
+<!--
 
-                                        <View
-                                            android:layout_width="1sp"
-                                            android:layout_height="match_parent"
-                                            android:background="#ccc"
-                                            android:layout_marginLeft="20dp"
-                                            android:layout_marginRight="20dp" />
-                    -->
+                    <View
+                        android:layout_width="1sp"
+                        android:layout_height="match_parent"
+                        android:background="#ccc"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp" />
+-->
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -710,13 +710,13 @@
                             android:textSize="18sp" />
                     </RelativeLayout>
 
-                    <!--
-                                        <View
-                                            android:layout_width="1sp"
-                                            android:layout_height="match_parent"
-                                            android:background="#ccc"
-                                            android:layout_marginLeft="20dp"
-                                            android:layout_marginRight="20dp" />-->
+<!--
+                    <View
+                        android:layout_width="1sp"
+                        android:layout_height="match_parent"
+                        android:background="#ccc"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp" />-->
 
                     <RelativeLayout
                         android:layout_width="0dp"

@@ -39,27 +39,6 @@ public class StatusHandler implements Runnable {
                 // Only run if connected to Wifi or Ethernet
                 if (connected) {
 
-                    /*
-                    UserConfiguration user = MyApplication.User;
-
-                    if (user != null && listItem != null) {
-
-                        final DeviceStatus status = DeviceStatus.get(user, listItem.uniqueId);
-                        if (status != null) {
-
-                            // Update UI on DeviceDetails
-                            final Runnable refresh = new Runnable() {
-                                public void run() {
-
-                                    context.deviceStatus = status;
-                                    context.loadData();
-                                }
-                            };
-
-                            handler.post(refresh);
-                        }
-                    }*/
-
                     if (listItem != null) {
 
                         final DeviceStatus status = DeviceStatus.get(listItem.uniqueId);
@@ -77,11 +56,12 @@ public class StatusHandler implements Runnable {
                             handler.post(refresh);
                         }
                     }
+
                 }
 
                 Thread.sleep(ApiConfiguration.apiUpdateInterval);
             }
-            catch (InterruptedException ex) {  }
+            catch (InterruptedException ex) { ex.printStackTrace(); }
         }
     }
 

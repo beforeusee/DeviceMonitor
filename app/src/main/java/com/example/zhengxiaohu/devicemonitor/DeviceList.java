@@ -2,6 +2,7 @@ package com.example.zhengxiaohu.devicemonitor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,7 +22,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.zhengxiaohu.devicemonitor.api.ApiConfiguration;
 import com.example.zhengxiaohu.devicemonitor.device_list.*;
@@ -39,6 +39,7 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
 
     private ListView deviceListView;
     private ListAdapter listAdapter;
+    private DeviceList mDeviceList;
 
     private static final String TAG = "DeviceList";
 
@@ -63,13 +64,22 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
         listAdapter=new ListAdapter(this,new ArrayList<ListItem>());
         deviceListView.setAdapter(listAdapter);
 
+        //初始化ApiConfiguration的值
+        if (ApiConfiguration.getSaveHost(this)!=null){
+
+            ApiConfiguration.apiHost=Uri.parse(ApiConfiguration.getSaveHost(this));
+        }
+        if (ApiConfiguration.getUpdateInterval(this)>=0){
+            ApiConfiguration.apiUpdateInterval=ApiConfiguration.getUpdateInterval(this);
+        }
+
         //Set onClick listener
         deviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //加载页面
-                //Loading.Open(context,"Loading Details..");
+                Loading.open(context,"Loading Details..");
 
                 //获取设备状态的异步任务
                 new GetDeviceStatus(context,position).execute();
@@ -110,7 +120,7 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
 
         //unregister Event
         EventBus.getDefault().unregister(this);
-        Log.d(TAG, "onStop: DeviceList unregister EventBut");
+        Log.d(TAG, "onDestroy: DeviceList unregister EventBut");
 
         super.onDestroy();
     }
@@ -119,6 +129,8 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
     public void onMessageEvent(MessageEvent event){
 
         Log.d(TAG, "onMessageEvent: apiServer="+event.apiServer+" updateInterval="+event.updateInterval);
+        ApiConfiguration.apiHost= Uri.parse(event.apiServer);
+        ApiConfiguration.apiUpdateInterval=Integer.valueOf(event.updateInterval);
         setHeaderView();
     }
     /**
@@ -142,6 +154,7 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
 
         //get Devices
         new GetDevices(this).execute();
+
     }
 
     public void updateStatus(DeviceStatus[] deviceStatus){
@@ -160,8 +173,10 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
                         int listIndex=getListIndex(uniqueId);
                         if (listIndex>=0){
                             ListItem listItem=listAdapter.getItem(listIndex);
-                            listItem.statusInfo=status.statusInfo;
-                            listItem.oeeInfo=status.oeeInfo;
+
+                            if (listItem!=null){
+                                listItem.mStatusInfo =status.mStatusInfo;
+                            }
                         }
                     }
 
@@ -215,6 +230,7 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
             if (view!=null){
                 view.setVisibility(View.GONE);
             }
+
         }else {
             //show "No Devices Found" text
             View view=findViewById(R.id.NoDevicesText);
@@ -365,24 +381,35 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
 
         if (headerView!=null){
 
-            ApiConfiguration.context=this;
-            //load Api Server
-            String apiServer=ApiConfiguration.getSaveHost();
+            apiServerTextView= (TextView) headerView.findViewById(R.id.ApiServer);
+//            ApiConfiguration.context=this;
+            //mLoad Api Server
+            String apiServer=ApiConfiguration.getSaveHost(this);
+
             if (apiServer!=null){
 
-                apiServerTextView= (TextView) headerView.findViewById(R.id.ApiServer);
                 if (apiServerTextView!=null){
                     apiServerTextView.setText(apiServer);
                 }
+            }else {
+
+                if (apiServerTextView!=null){
+                    apiServerTextView.setText(ApiConfiguration.apiHost.toString());
+                }
             }
 
-//            load Update Interval
-            int updateInterval=ApiConfiguration.getUpdateInterval();
+            updateIntervalTextView= (TextView) headerView.findViewById(R.id.UpdateInterval);
+//            mLoad Update Interval
+            int updateInterval=ApiConfiguration.getUpdateInterval(this);
             if (updateInterval>=0){
 
-                updateIntervalTextView= (TextView) headerView.findViewById(R.id.UpdateInterval);
                 if (updateIntervalTextView!=null){
                     updateIntervalTextView.setText(String.valueOf(updateInterval));
+                }
+            }else {
+                if (updateIntervalTextView!=null){
+
+                    updateIntervalTextView.setText(String.valueOf(ApiConfiguration.apiUpdateInterval));
                 }
             }
         }
@@ -394,16 +421,16 @@ public class DeviceList extends AppCompatActivity implements NavigationView.OnNa
      */
     private void setHeaderView(){
 
-        ApiConfiguration.context=this;
-        //load Api Server
-        String apiServer=ApiConfiguration.getSaveHost();
+//        ApiConfiguration.context=this;
+        //mLoad Api Server
+        String apiServer=ApiConfiguration.getSaveHost(this);
         if (apiServer!=null){
 
                 apiServerTextView.setText(apiServer);
         }
 
-//            load Update Interval
-        int updateInterval=ApiConfiguration.getUpdateInterval();
+//            mLoad Update Interval
+        int updateInterval=ApiConfiguration.getUpdateInterval(this);
         if (updateInterval>=0){
 
             updateIntervalTextView.setText(String.valueOf(updateInterval));

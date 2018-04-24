@@ -16,8 +16,9 @@
         android:background="@color/accent_normal_color">
 
         <RelativeLayout
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal"
             android:id="@+id/relativeLayout3"
             android:layout_centerHorizontal="true">

@@ -1,4 +1,4 @@
-package com.example.zhengxiaohu.devicemonitor.api.data;
+package com.example.zhengxiaohu.devicemonitor.api.data.machine;
 
 import org.json.JSONObject;
 

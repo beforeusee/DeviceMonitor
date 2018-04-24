@@ -12,7 +12,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-        <!--<item name="android:textColor">#ff0000</item>-->
+        <!--<item mName="android:textColor">#ff0000</item>-->
 
         <item name="colorControlNormal">#ff0000</item>
 

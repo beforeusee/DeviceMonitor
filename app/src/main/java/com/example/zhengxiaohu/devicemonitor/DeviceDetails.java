@@ -1,10 +1,12 @@
 package com.example.zhengxiaohu.devicemonitor;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,17 +19,20 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.zhengxiaohu.devicemonitor.api.data.StatusInfo;
-import com.example.zhengxiaohu.devicemonitor.api.data.TimersInfo;
+import com.example.zhengxiaohu.devicemonitor.api.ApiConfiguration;
 import com.example.zhengxiaohu.devicemonitor.device_details.DeviceStatus;
 import com.example.zhengxiaohu.devicemonitor.device_details.GetDeviceStatus;
 import com.example.zhengxiaohu.devicemonitor.device_details.StatusHandler;
 import com.example.zhengxiaohu.devicemonitor.device_list.ListItem;
+import com.example.zhengxiaohu.devicemonitor.tools.MPAndroidLineChartManager;
+import com.example.zhengxiaohu.devicemonitor.view.DialChartSLoadView;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.LineData;
 
-import org.joda.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DeviceDetails extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -35,6 +40,55 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
     public static String DEVICE_INDEX="device_index";
 
     public static DeviceStatus deviceStatus;
+
+    //侧滑的导航栏
+    TextView apiServerTextView;
+    TextView updateIntervalTextView;
+
+    //x
+    TextView xPosView;
+    TextView xAxisFeedRateView;
+    DialChartSLoadView xLoadView;
+
+    //y
+    TextView yPosView;
+    TextView yAxisFeedRateView;
+    DialChartSLoadView yLoadView;
+
+    //z
+    TextView zPosView;
+    TextView zAxisFeedRateView;
+    DialChartSLoadView zLoadView;
+
+    //S主轴
+    TextView spindleVelocityView;
+    DialChartSLoadView sLoadView;
+
+    //A
+    DialChartSLoadView aLoadView;
+    TextView aAngularVelocity;
+    TextView aAngleTextView;
+
+    //B
+    TextView bAngleTextView;
+    TextView bAngularVelocity;
+    DialChartSLoadView bLoadView;
+
+    //C
+    TextView cAngleTextView;
+    TextView cAngularVelocity;
+    DialChartSLoadView cLoadView;
+
+    //能耗
+    TextView mElectricalEnergy;
+
+    //功率图形
+    LineChart mLineChart;
+    private List<Float> mPowerList=new ArrayList<>();
+
+    private static final int X_MAX_POINT=60;
+    private int mCount=0;
+    private int mXAxisMin=0;
 
     private Toolbar toolbar;
     private Thread statusThread;
@@ -46,6 +100,8 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         setContentView(R.layout.activity_device_details);
 
         MyApplication.setCurrentActivity(this);
+
+        initView();
 
         hideLoading();
 
@@ -67,6 +123,57 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
         //setup Navigation drawer
         setNavigationDrawer();
+
+        sLoadView.invalidate();
+        xLoadView.invalidate();
+        yLoadView.invalidate();
+        zLoadView.invalidate();
+        aLoadView.invalidate();
+        bLoadView.invalidate();
+        cLoadView.invalidate();
+
+    }
+
+    private void initView() {
+
+        //X
+        xPosView= (TextView) findViewById(R.id.xPos);
+        xAxisFeedRateView= (TextView) findViewById(R.id.xAxisFeedRate);
+        xLoadView= (DialChartSLoadView) findViewById(R.id.x_load_view);
+
+        //Y
+        yPosView= (TextView) findViewById(R.id.yPos);
+        yAxisFeedRateView= (TextView) findViewById(R.id.yAxisFeedRate);
+        yLoadView= (DialChartSLoadView) findViewById(R.id.y_load_view);
+
+        //Z
+        zPosView= (TextView) findViewById(R.id.zPos);
+        zAxisFeedRateView= (TextView) findViewById(R.id.zAxisFeedRate);
+        zLoadView= (DialChartSLoadView) findViewById(R.id.z_load_view);
+
+        //S
+        spindleVelocityView= (TextView) findViewById(R.id.spindleVelocity);
+        sLoadView= (DialChartSLoadView) findViewById(R.id.spindle_load_view);
+
+        //A
+        aLoadView= (DialChartSLoadView) findViewById(R.id.a_load_view);
+        aAngularVelocity = (TextView) findViewById(R.id.aAngularVelocity);
+        aAngleTextView = (TextView) findViewById(R.id.aAngle);
+
+        //B
+        bAngleTextView = (TextView) findViewById(R.id.bAngle);
+        bAngularVelocity = (TextView) findViewById(R.id.bAngularVelocity);
+        bLoadView = (DialChartSLoadView) findViewById(R.id.b_load_view);
+
+        //C
+        cAngleTextView = (TextView) findViewById(R.id.cAngle);
+        cAngularVelocity = (TextView) findViewById(R.id.cAngularVelocity);
+        cLoadView = (DialChartSLoadView) findViewById(R.id.c_load_view);
+
+        //能耗
+        mElectricalEnergy= (TextView) findViewById(R.id.ElectricalEnergy);
+        //功率
+        mLineChart= (LineChart) findViewById(R.id.lc_power);
     }
 
     @Override
@@ -82,10 +189,21 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         if (deviceStatus == null) deviceStatus = new DeviceStatus();
 
         deviceStatus.uniqueId = item.uniqueId;
-        deviceStatus.statusInfo = item.statusInfo;
-        deviceStatus.controllerInfo = item.controllerInfo;
-        deviceStatus.oeeInfo = item.oeeInfo;
-        deviceStatus.timersInfo = item.timersInfo;
+        deviceStatus.mStatusInfo = item.mStatusInfo;
+        deviceStatus.mControllerInfo = item.mControllerInfo;
+        deviceStatus.mDescriptionInfo=item.mDescriptionInfo;
+
+        deviceStatus.mXInfo=item.mXInfo;
+        deviceStatus.mYInfo=item.mYInfo;
+        deviceStatus.mZInfo=item.mZInfo;
+        deviceStatus.mSInfo=item.mSInfo;
+        deviceStatus.mAInfo=item.mAInfo;
+        deviceStatus.mBInfo=item.mBInfo;
+        deviceStatus.mCInfo=item.mCInfo;
+
+        deviceStatus.mChatterVibrationInfo=item.mChatterVibrationInfo;
+        deviceStatus.mElectricalEnergyInfo=item.mElectricalEnergyInfo;
+
 
         //loadImages(d);
 
@@ -106,24 +224,24 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
     private void loadDescription(ListItem item) {
 
-        if (item != null && item.descriptionInfo != null) {
+        if (item != null && item.mDescriptionInfo != null) {
 
             TextView txt;
 
-            txt = (TextView) findViewById(R.id.Description);
-            if (txt != null) txt.setText(item.descriptionInfo.description);
+            txt = (TextView) findViewById(R.id.Address);
+            if (txt != null) txt.setText(item.mDescriptionInfo.address);
+
+            txt = (TextView) findViewById(R.id.Port);
+            if (txt != null) txt.setText(item.mDescriptionInfo.port);
+
+            txt = (TextView) findViewById(R.id.Name);
+            if (txt != null) txt.setText(item.mDescriptionInfo.name);
+
+            txt = (TextView) findViewById(R.id.Uuid);
+            if (txt != null) txt.setText(item.mDescriptionInfo.uuid);
 
             txt = (TextView) findViewById(R.id.DeviceId);
-            if (txt != null) txt.setText(item.descriptionInfo.deviceId);
-
-            txt = (TextView) findViewById(R.id.Manufacturer);
-            if (txt != null) txt.setText(item.descriptionInfo.manufacturer);
-
-            txt = (TextView) findViewById(R.id.Model);
-            if (txt != null) txt.setText(item.descriptionInfo.model);
-
-            txt = (TextView) findViewById(R.id.Serial);
-            if (txt != null) txt.setText(item.descriptionInfo.serial);
+            if (txt != null) txt.setText(item.mDescriptionInfo.deviceId);
         }
     }
 
@@ -131,196 +249,458 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
         if (deviceStatus != null) {
 
-            updateStatus(deviceStatus);
-
-            updateOeeStatus(deviceStatus);
-
-            updateDevicePercentages(deviceStatus);
+//            updateStatus(deviceStatus);
 
             updateControllerStatus(deviceStatus);
+
+            updateAxesLinearXInfo(deviceStatus);
+            updateAxesLinearYInfo(deviceStatus);
+            updateAxesLinearZInfo(deviceStatus);
+
+            updateAxesRotarySInfo(deviceStatus);
+
+            updateAxesRotaryAInfo(deviceStatus);
+            updateAxesRotaryBInfo(deviceStatus);
+            updateAxesRotaryCInfo(deviceStatus);
+
+            updateChatterVibrationStatus(deviceStatus);
+
+            updateElectricalEnergyInfo(deviceStatus);
+
+            updatePowerInfo(deviceStatus);
+
         }
     }
 
-    public void refresh() {
+    private void updatePowerInfo(DeviceStatus deviceStatus) {
 
-        if (deviceStatus != null) new GetDeviceStatus(this, deviceStatus.uniqueId).execute();
+        List<Float> x=new ArrayList<>();
+        List<Float> y=new ArrayList<>();
+        LineData lineData;
+
+        if (deviceStatus!=null){
+
+            if (!deviceStatus.mElectricalEnergyInfo.power.isEmpty()){
+
+                mPowerList.add(Float.valueOf(deviceStatus.mElectricalEnergyInfo.power));
+                mCount++;
+                if (mCount<X_MAX_POINT){
+
+                    for (int i=0;i<mPowerList.size();i++ ){
+                        x.add(i,1.0f*i);
+                        y.add(i,mPowerList.get(i));
+                    }
+                    lineData=MPAndroidLineChartManager.initSingleLineChart(this,mLineChart,x,y,"功率");
+
+                }else {
+                    //X的坐标从索引mPowerList.size()-X_MAX_POINT开始算起
+                    for (int i=0;i<X_MAX_POINT;i++){
+
+                        x.add(i,1.0f*(mPowerList.size()-X_MAX_POINT+i));
+                        y.add(i,mPowerList.get(mPowerList.size()-X_MAX_POINT+i));
+                    }
+                    lineData=MPAndroidLineChartManager.initSingleLineChart(this,mLineChart,x,y,"功率");
+                }
+                MPAndroidLineChartManager.initChartStyle(this,mLineChart,lineData);
+            }
+        }
+
     }
 
-    private void updateStatus(DeviceStatus status) {
+    private void updateElectricalEnergyInfo(DeviceStatus deviceStatus) {
 
-        if (status.statusInfo == null) status.statusInfo = new StatusInfo();
+        if (deviceStatus.mElectricalEnergyInfo!=null){
 
-        if (status.statusInfo.deviceStatus != null) {
+            if (!deviceStatus.mElectricalEnergyInfo.electricalEnergy.isEmpty()){
 
-            String deviceStatus = status.statusInfo.deviceStatus;
+                if (mElectricalEnergy!=null){
 
-            // Current Status Indicator
-            View banner = findViewById(R.id.DeviceStatusIndicator);
-            if (banner != null) {
+                    if (!deviceStatus.mElectricalEnergyInfo.electricalEnergy.isEmpty()){
 
-                if (deviceStatus.equals("Alert")) {
-                    banner.setBackgroundColor(getResources().getColor(R.color.statusRed));
-                } else if (deviceStatus.equals("Idle")) {
-                    banner.setBackgroundColor(getResources().getColor(R.color.statusOrange));
-                } else {
-                    banner.setBackgroundColor(getResources().getColor(R.color.statusGreen));
+                        mElectricalEnergy.setText(String.format("%.2f",Float.valueOf(deviceStatus.mElectricalEnergyInfo.electricalEnergy)/3600000));
+                    }else {
+                        mElectricalEnergy.setText("");
+                    }
                 }
             }
 
-            // Current Status Text
-            TextView txt = (TextView)findViewById(R.id.DeviceStatusText);
-            if (txt != null) txt.setText(deviceStatus);
-
-            // Current Status Timer
-            Period period = new Period(status.statusInfo.deviceStatusTimer * 1000);
-            String statusPeriod = String.format("%02d:%02d:%02d", period.getHours(), period.getMinutes(), period.getSeconds());
-
-            txt = (TextView)findViewById(R.id.DeviceStatusTime);
-            if (txt != null) txt.setText(statusPeriod);
-
-        } else clearStatus();
+        }else {
+            clearElectricalEnergyInfo();
+        }
     }
 
-    private void clearStatus() {
+    private void clearElectricalEnergyInfo() {
 
-        View banner = findViewById(R.id.DeviceStatusIndicator);
-        if (banner != null) banner.setBackgroundColor(Color.TRANSPARENT);
-
-        TextView txt = (TextView)findViewById(R.id.DeviceStatusText);
-        if (txt != null) txt.setText("");
-
-        txt = (TextView)findViewById(R.id.DeviceStatusTime);
-        if (txt != null) txt.setText("");
     }
 
-    private void updateDevicePercentages(DeviceStatus status) {
+    /**
+     * 更新颤振状态
+     * 主轴加工过程是否发生颤振
+     * @param deviceStatus 设备状态
+     */
+    private void updateChatterVibrationStatus(DeviceStatus deviceStatus) {
 
-        // Percentages
-        if (status.timersInfo != null && status.timersInfo.total > 0) {
+        if (deviceStatus.mChatterVibrationInfo!=null){
 
-            TimersInfo info = status.timersInfo;
+            //根据值设置颜色
+            int color=getResources().getColor(R.color.foreground_normal_color);
 
-            double active = (info.active / info.total) * 100;
-            double idle = (info.idle / info.total) * 100;
-            double alert = (info.alert / info.total) * 100;
+            ImageView vibrationImageView= (ImageView) findViewById(R.id.SpindleVibrationImage);
+            TextView vibrationTextView= (TextView) findViewById(R.id.SpindleVibrationText);
 
-            // Progress Bars
+            if (vibrationImageView!=null){
 
-            // Active
-            ProgressBar pb = (ProgressBar)findViewById(R.id.ActiveProgressBar);
-            if (pb != null) pb.setProgress((int)Math.round(active));
+                //发生颤振
+                if (deviceStatus.mChatterVibrationInfo.isChatterVibration){
 
-            // Idle
-            pb = (ProgressBar)findViewById(R.id.IdleProgressBar);
-            if (pb != null) pb.setProgress((int)Math.round(idle));
+                    vibrationImageView.setImageResource(R.drawable.chatter_03);
+                    vibrationImageView.setColorFilter(ContextCompat.getColor(this,R.color.statusRed));
+                    vibrationTextView.setText("CHATTER");
+                }else {
+                    vibrationImageView.setColorFilter(ContextCompat.getColor(this,R.color.statusGreen));
+                    vibrationTextView.setText("NORMAL");
+                }
+            }
+        }else {
 
-            // Alert
-            pb = (ProgressBar)findViewById(R.id.AlertProgressBar);
-            if (pb != null) pb.setProgress((int)Math.round(alert));
+            ImageView vibrationImageView= (ImageView) findViewById(R.id.SpindleVibrationImage);
+            TextView vibrationTextView= (TextView) findViewById(R.id.SpindleVibrationText);
 
-
-            // Percentage TextViews
-
-            // Active
-            TextView txt = (TextView)findViewById(R.id.ActivePercentage);
-            if (txt != null) txt.setText(String.format("%.0f%%", active));
-
-            // Idle
-            txt = (TextView)findViewById(R.id.IdlePercentage);
-            if (txt != null) txt.setText(String.format("%.0f%%", idle));
-
-            // Alert
-            txt = (TextView)findViewById(R.id.AlertPercentage);
-            if (txt != null) txt.setText(String.format("%.0f%%", alert));
-
-            // Time Elapsed TextViews
-
-            // Active
-            Integer seconds = Integer.valueOf((int) Math.round(info.active));
-            Period period = new Period(seconds * 1000);
-            String statusPeriod = String.format("%02d:%02d:%02d", period.getHours(), period.getMinutes(), period.getSeconds());
-            txt = (TextView)findViewById(R.id.ActiveTime);
-            if (txt != null) txt.setText(statusPeriod);
-
-            // Idle
-            seconds = Integer.valueOf((int) Math.round(info.idle));
-            period = new Period(seconds * 1000);
-            statusPeriod = String.format("%02d:%02d:%02d", period.getHours(), period.getMinutes(), period.getSeconds());
-            txt = (TextView)findViewById(R.id.IdleTime);
-            if (txt != null) txt.setText(statusPeriod);
-
-            // Alert
-            seconds = Integer.valueOf((int) Math.round(info.alert));
-            period = new Period(seconds * 1000);
-            statusPeriod = String.format("%02d:%02d:%02d", period.getHours(), period.getMinutes(), period.getSeconds());
-            txt = (TextView)findViewById(R.id.AlertTime);
-            if (txt != null) txt.setText(statusPeriod);
-
-        } else clearDevicePercentages();
+            vibrationImageView.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
+            vibrationTextView.setText("");
+        }
     }
 
-    private void clearDevicePercentages() {
+    /**
+     * 更新C轴信息
+     * @param deviceStatus 状态
+     */
+    private void updateAxesRotaryCInfo(DeviceStatus deviceStatus) {
 
-        // Active
-        TextView txt = (TextView)findViewById(R.id.ActivePercentage);
-        if (txt != null) txt.setText("");
-        txt = (TextView)findViewById(R.id.ActiveTime);
-        if (txt != null) txt.setText("");
+        if (deviceStatus.mCInfo!=null){
 
-        // Idle
-        txt = (TextView)findViewById(R.id.IdlePercentage);
-        if (txt != null) txt.setText("");
-        txt = (TextView)findViewById(R.id.IdleTime);
-        if (txt != null) txt.setText("");
+            //角度
+//            float angleDouble=Float.valueOf(deviceStatus.mCInfo.mAngle);
+//            String angle=String.format("%.3f",angleDouble);
 
-        // Alert
-        txt = (TextView)findViewById(R.id.AlertPercentage);
-        if (txt != null) txt.setText("");
-        txt = (TextView)findViewById(R.id.AlertTime);
-        if (txt != null) txt.setText("");
+            if (cAngleTextView !=null){
+                if (!deviceStatus.mCInfo.mAngle.isEmpty()){
+                    cAngleTextView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mCInfo.mAngle)));
+                }else {
+
+                    cAngleTextView.setText("");
+                }
+            }
+
+            //旋转速度
+            if (cAngularVelocity!=null){
+
+                if (!deviceStatus.mCInfo.mAngularVelocity.isEmpty()){
+
+                    cAngularVelocity.setText(String.format("%.0f",Float.valueOf(deviceStatus.mCInfo.mAngularVelocity)*60));
+                }else {
+
+                    cAngularVelocity.setText("");
+                }
+            }
+
+
+            //负载
+            if (cLoadView !=null){
+
+                if (!deviceStatus.mCInfo.mLoad.equals("")){
+
+                    cLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mCInfo.mLoad)/100);
+                    cLoadView.invalidate();
+                }else {
+                    cLoadView.setCurrentStatus(0.0f);
+                    cLoadView.invalidate();
+
+                }
+            }
+
+        }else {
+
+
+        }
     }
 
-    private void updateOeeStatus(DeviceStatus status) {
+    /**
+     * 更新B轴信息
+     * @param deviceStatus 状态
+     */
+    private void updateAxesRotaryBInfo(DeviceStatus deviceStatus) {
 
-        if (status.oeeInfo != null) {
+        if (deviceStatus.mBInfo!=null){
 
-            // Set OEE
-            double val = status.oeeInfo.oee * 100;
-            String s = String.format("%.0f%%", val);
-            TextView txt = (TextView) findViewById(R.id.OEE);
-            if (txt != null) txt.setText(s);
+            //角度
+//            float angleDouble=Float.valueOf(deviceStatus.mBInfo.mAngle);
+//            String angle=String.format("%.3f",angleDouble);
 
-            // Set Availability
-            val = status.oeeInfo.availability * 100;
-            s = String.format("%.0f%%", val);
-            txt = (TextView) findViewById(R.id.AvailabilityVariable);
-            if (txt != null) txt.setText(s);
+            if (bAngleTextView !=null){
+                if (!deviceStatus.mBInfo.mAngle.isEmpty()){
+                    bAngleTextView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mBInfo.mAngle)));
+                }else {
+                    bAngleTextView.setText("");
+                }
 
-            // Set Performance
-            val = status.oeeInfo.performance * 100;
-            s = String.format("%.0f%%", val);
-            txt = (TextView) findViewById(R.id.Performance);
-            if (txt != null) txt.setText(s);
+            }
 
-        } else clearOeeStatus();
+            //旋转速度
+            if (bAngularVelocity!=null){
+
+                if (!deviceStatus.mBInfo.mAngularVelocity.isEmpty()){
+
+                    bAngularVelocity.setText(String.format("%.0f",Float.valueOf(deviceStatus.mBInfo.mAngularVelocity)*60));
+                }else {
+
+                    bAngularVelocity.setText("");
+                }
+            }
+
+            //负载
+            if (bLoadView !=null){
+
+                if (!deviceStatus.mBInfo.mLoad.equals("")){
+                    bLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mBInfo.mLoad)/100);
+                    bLoadView.invalidate();
+                }else {
+                    bLoadView.setCurrentStatus(0.0f);
+                    bLoadView.invalidate();
+                }
+            }
+
+        }
     }
 
-    private void clearOeeStatus() {
+    /**
+     * 更新A轴信息
+     * @param deviceStatus 状态
+     */
+    private void updateAxesRotaryAInfo(DeviceStatus deviceStatus) {
 
-        TextView txt = (TextView) findViewById(R.id.OEE);
-        if (txt != null) txt.setText("");
+        if (deviceStatus.mAInfo!=null){
 
-        txt = (TextView) findViewById(R.id.AvailabilityVariable);
-        if (txt != null) txt.setText("");
+            //角度
+//            float angleDouble=Float.valueOf(deviceStatus.mAInfo.mAngle);
+//            String angle=String.format("%.3f",angleDouble);
+            if (aAngleTextView !=null){
 
-        txt = (TextView) findViewById(R.id.Performance);
-        if (txt != null) txt.setText("");
+                if (!deviceStatus.mAInfo.mAngle.isEmpty()){
+
+                    aAngleTextView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mAInfo.mAngle)));
+                }else {
+                    aAngleTextView.setText("");
+                }
+            }
+
+            //旋转速度
+            if (aAngularVelocity !=null){
+
+                if (!deviceStatus.mAInfo.mAngularVelocity.isEmpty()){
+
+                    aAngularVelocity.setText(String.format("%.0f",Float.valueOf(deviceStatus.mAInfo.mAngularVelocity)*60));
+                }else {
+                    aAngularVelocity.setText("");
+                }
+            }
+
+
+            //负载
+            if (aLoadView!=null){
+
+                if (!deviceStatus.mAInfo.mLoad.equals("")){
+                    aLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mAInfo.mLoad)/100);
+                    aLoadView.invalidate();
+                }else {
+                    aLoadView.setCurrentStatus(0.0f);
+                    aLoadView.invalidate();
+                }
+            }
+
+        }
     }
 
+    /**
+     * 更新主轴信息，转速和负载
+     * @param deviceStatus 状态
+     */
+    private void updateAxesRotarySInfo(DeviceStatus deviceStatus) {
 
+        if (deviceStatus.mSInfo!=null){
+
+            //主轴转速
+            if (spindleVelocityView!=null){
+
+                if (!deviceStatus.mSInfo.mRotaryVelocity.isEmpty()){
+
+                    spindleVelocityView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mSInfo.mRotaryVelocity)));
+                }else {
+                    spindleVelocityView.setText("");
+                }
+            }
+
+            //主轴负载
+            if (sLoadView!=null){
+                if (!deviceStatus.mSInfo.mLoad.equals("")){
+                    sLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mSInfo.mLoad)/100);
+                    sLoadView.invalidate();
+                }else {
+                    sLoadView.setCurrentStatus(0.0f);
+                    sLoadView.invalidate();
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 更新Z轴信息
+     * @param deviceStatus 设备状态
+     */
+    private void updateAxesLinearZInfo(DeviceStatus deviceStatus) {
+
+        if (deviceStatus.mZInfo!=null){
+
+            //Z轴位置
+            if (zPosView!=null){
+
+                if (!deviceStatus.mZInfo.position.isEmpty()){
+
+                    zPosView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mZInfo.position)));
+                }else {
+                    zPosView.setText("");
+                }
+            }
+
+            //z轴速度
+            if (zAxisFeedRateView!=null){
+
+                if (!deviceStatus.mZInfo.axisFeedRate.isEmpty()){
+
+                    zAxisFeedRateView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mZInfo.axisFeedRate)*60));
+                }else {
+                    zAxisFeedRateView.setText("");
+                }
+            }
+
+            //z轴负载
+            if (zLoadView!=null){
+
+                if (!deviceStatus.mZInfo.load.equals("")){
+                    zLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mZInfo.load)/100);
+                    zLoadView.invalidate();
+                }else {
+                    zLoadView.setCurrentStatus(0.0f);
+                    zLoadView.invalidate();
+
+                }
+
+            }
+        }
+    }
+
+    /**
+     * 更新Y轴信息
+     * @param deviceStatus 设备状态
+     */
+    private void updateAxesLinearYInfo(DeviceStatus deviceStatus) {
+
+        if (deviceStatus.mYInfo!=null){
+
+            //Y轴位置
+            if (yPosView!=null){
+
+                if (!deviceStatus.mYInfo.position.isEmpty()){
+
+                    yPosView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mYInfo.position)));
+                }else {
+                    yPosView.setText("");
+                }
+            }
+
+            //Y轴速度
+            if (yAxisFeedRateView!=null){
+
+                if (!deviceStatus.mYInfo.axisFeedRate.isEmpty()){
+
+                    yAxisFeedRateView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mYInfo.axisFeedRate)*60));
+                }else {
+                    yAxisFeedRateView.setText("");
+                }
+            }
+
+            //y轴负载
+            if (yLoadView!=null){
+
+                if (!deviceStatus.mYInfo.load.equals("")){
+                    yLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mYInfo.load)/100);
+                    yLoadView.invalidate();
+                }else {
+                    yLoadView.setCurrentStatus(0.0f);
+                    yLoadView.invalidate();
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 更新X轴信息
+     * @param deviceStatus 设备状态
+     */
+    private void updateAxesLinearXInfo(DeviceStatus deviceStatus) {
+
+        if (deviceStatus.mXInfo!=null){
+
+            //X轴位置
+
+            if (xPosView!=null){
+
+                if (!deviceStatus.mXInfo.position.isEmpty()){
+
+                    xPosView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mXInfo.position)));
+                }else {
+                    xPosView.setText("");
+                }
+            }
+
+            //X轴速度
+
+            if (xAxisFeedRateView!=null){
+
+                if (!deviceStatus.mXInfo.axisFeedRate.isEmpty()){
+
+                    xAxisFeedRateView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mXInfo.axisFeedRate)*60));
+                }else {
+                    xAxisFeedRateView.setText("");
+                }
+            }
+
+            //X轴负载
+
+            if (xLoadView!=null){
+
+                if (!deviceStatus.mXInfo.load.equals("")){
+                    xLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mXInfo.load)/100);
+                    xLoadView.invalidate();
+                }else {
+
+                    xLoadView.setCurrentStatus(0.0f);
+                    xLoadView.invalidate();
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 更新控制器状态
+     * @param status 状态
+     */
     private void updateControllerStatus(DeviceStatus status) {
 
-        if (status != null && status.controllerInfo != null) {
+        if (status != null && status.mControllerInfo != null) {
 
             updateControllerStatus_Availability(status);
             updateControllerStatus_EmergencyStop(status);
@@ -328,18 +708,23 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             updateControllerStatus_ExecutionMode(status);
             updateControllerStatus_SystemStatus(status);
             updateControllerStatus_CurrentProgram(status);
+            updateControllerStatus_PathFeedRate(status);
         }
     }
 
+    /**
+     * 更新控制器可用性
+     * @param status 状态
+     */
     private void updateControllerStatus_Availability(DeviceStatus status) {
 
-        boolean avail = status.controllerInfo.availability.equals("AVAILABLE");
+        boolean avail = status.mControllerInfo.availability.equals("true");
 
         // Set Power On Background
         View bkgrd = findViewById(R.id.PowerOnBackground);
         if (bkgrd != null) {
 
-            if (avail) bkgrd.setBackgroundColor(getResources().getColor(R.color.statusGreen));
+            if (avail) bkgrd.setBackgroundColor(ContextCompat.getColor(this,R.color.statusGreen));
             else bkgrd.setBackgroundColor(Color.TRANSPARENT);
         }
 
@@ -348,7 +733,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         if (bkgrd != null) {
 
             if (avail) bkgrd.setBackgroundColor(Color.TRANSPARENT);
-            else bkgrd.setBackgroundColor(getResources().getColor(R.color.statusRed));
+            else bkgrd.setBackgroundColor(ContextCompat.getColor(this,R.color.statusRed));
         }
 
 
@@ -357,14 +742,14 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         if (img != null) {
 
             if (avail) img.setColorFilter(Color.WHITE);
-            else img.setColorFilter(getResources().getColor(R.color.foreground_light_color));
+            else img.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
         }
 
         // Set Power Off Image
         img = (ImageView)findViewById(R.id.PowerOffImage);
         if (img != null) {
 
-            if (avail) img.setColorFilter(getResources().getColor(R.color.foreground_light_color));
+            if (avail) img.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
             else img.setColorFilter(Color.WHITE);
         }
 
@@ -373,23 +758,32 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         TextView txt = (TextView)findViewById(R.id.AvailabilityText);
         if (txt != null) {
 
-            txt.setText(status.controllerInfo.availability);
+            if (avail) {
 
-            if (avail) txt.setTextColor(getResources().getColor(R.color.statusGreen));
-            else txt.setTextColor(getResources().getColor(R.color.statusRed));
+                txt.setText("AVAILABLE");
+                txt.setTextColor(ContextCompat.getColor(this,R.color.statusGreen));
+            }
+            else {
+                txt.setText("UNAVAILABLE");
+                txt.setTextColor(ContextCompat.getColor(this,R.color.statusRed));
+            }
         }
     }
 
+    /**
+     * 更新急停按钮
+     * @param status 状态
+     */
     private void updateControllerStatus_EmergencyStop(DeviceStatus status) {
 
         // Set color based on value
-        int color = getResources().getColor(R.color.foreground_normal_color);
+        int color = ContextCompat.getColor(this,R.color.foreground_normal_color);
 
-        if (status.controllerInfo.emergencyStop.equals("ARMED"))
-            color = getResources().getColor(R.color.statusGreen);
+        if (status.mControllerInfo.emergencyStop.equals("ARMED"))
+            color = ContextCompat.getColor(this,R.color.statusGreen);
 
-        else if (status.controllerInfo.emergencyStop.equals("TRIGGERED"))
-            color = getResources().getColor(R.color.statusRed);
+        else if (status.mControllerInfo.emergencyStop.equals("TRIGGERED"))
+            color = ContextCompat.getColor(this,R.color.statusRed);
 
 
         // Set Image
@@ -399,105 +793,117 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         // Set Text
         TextView txt = (TextView)findViewById(R.id.EmergencyStopText);
         if (txt != null) {
-            txt.setText(status.controllerInfo.emergencyStop);
+            txt.setText(status.mControllerInfo.emergencyStop);
             txt.setTextColor(color);
         }
     }
 
+    /**
+     * 更新控制器模式
+     * @param status 状态
+     */
     private void updateControllerStatus_ControllerMode(DeviceStatus status) {
 
-        String s = status.controllerInfo.controllerMode;
+        String s = status.mControllerInfo.controllerMode;
 
         // Automatic
         ImageView img = (ImageView)findViewById(R.id.ControllerMode_Auto);
         if (img != null)
         {
-            if (s.equals("AUTOMATIC")) img.setColorFilter(getResources().getColor(R.color.statusGreen));
-            else img.setColorFilter(getResources().getColor(R.color.foreground_light_color));
+            if (s.equals("AUTOMATIC")) img.setColorFilter(ContextCompat.getColor(this,R.color.statusGreen));
+            else img.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
         }
 
         // MDI (Manual Data Input)
         img = (ImageView)findViewById(R.id.ControllerMode_MDI);
         if (img != null)
         {
-            if (s.equals("MANUAL_DATA_INPUT")) img.setColorFilter(getResources().getColor(R.color.accent_light_color));
-            else img.setColorFilter(getResources().getColor(R.color.foreground_light_color));
+            if (s.equals("MANUAL_DATA_INPUT")) img.setColorFilter(ContextCompat.getColor(this,R.color.accent_light_color));
+            else img.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
         }
 
         // SBLK (Single Block Mode)
         img = (ImageView)findViewById(R.id.ControllerMode_SBLK);
         if (img != null)
         {
-            if (s.equals("SEMI_AUTOMATIC")) img.setColorFilter(getResources().getColor(R.color.accent_light_color));
-            else img.setColorFilter(getResources().getColor(R.color.foreground_light_color));
+            if (s.equals("SEMI_AUTOMATIC")) img.setColorFilter(ContextCompat.getColor(this,R.color.accent_light_color));
+            else img.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
         }
 
         // Manual (Jog, etc.)
         img = (ImageView)findViewById(R.id.ControllerMode_Manaul);
         if (img != null)
         {
-            if (s.equals("MANUAL")) img.setColorFilter(getResources().getColor(R.color.accent_light_color));
-            else img.setColorFilter(getResources().getColor(R.color.foreground_light_color));
+            if (s.equals("MANUAL")) img.setColorFilter(ContextCompat.getColor(this,R.color.accent_light_color));
+            else img.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
         }
 
         // Edit
         img = (ImageView)findViewById(R.id.ControllerMode_Edit);
         if (img != null)
         {
-            if (s.equals("EDIT")) img.setColorFilter(getResources().getColor(R.color.accent_light_color));
-            else img.setColorFilter(getResources().getColor(R.color.foreground_light_color));
+            if (s.equals("EDIT")) img.setColorFilter(ContextCompat.getColor(this,R.color.accent_light_color));
+            else img.setColorFilter(ContextCompat.getColor(this,R.color.foreground_light_color));
         }
     }
 
+    /**
+     * 更新程序执行状态
+     * @param status 状态
+     */
     private void updateControllerStatus_ExecutionMode(DeviceStatus status) {
 
         TextView txt = (TextView)findViewById(R.id.ExecutionModeText);
         if (txt != null) {
 
-            txt.setText(status.controllerInfo.executionMode);
+            txt.setText(status.mControllerInfo.executionMode);
 
-            if (status.controllerInfo.executionMode.equals("ACTIVE"))
+            if (status.mControllerInfo.executionMode.equals("ACTIVE"))
 
-                txt.setTextColor(getResources().getColor(R.color.statusGreen));
+                txt.setTextColor(ContextCompat.getColor(this,R.color.statusGreen));
 
-            else if (status.controllerInfo.executionMode.equals("STOPPED") || status.controllerInfo.executionMode.equals("INTERRUPTED"))
+            else if (status.mControllerInfo.executionMode.equals("STOPPED") || status.mControllerInfo.executionMode.equals("INTERRUPTED"))
 
-                txt.setTextColor(getResources().getColor(R.color.statusRed));
+                txt.setTextColor(ContextCompat.getColor(this,R.color.statusRed));
 
             else
 
-                txt.setTextColor(getResources().getColor(R.color.foreground_normal_color));
+                txt.setTextColor(ContextCompat.getColor(this,R.color.foreground_normal));
         }
     }
 
+    /**
+     * 更新控制器状态，含SystemStatus
+     * @param status 状态
+     */
     private void updateControllerStatus_SystemStatus(DeviceStatus status) {
 
         // Set System Status
         TextView txt = (TextView)findViewById(R.id.SystemStatusText);
         if (txt != null) {
 
-            String s1 = status.controllerInfo.systemStatus;
+            String s1 = status.mControllerInfo.systemStatus;
 
             txt.setText(s1);
 
             if (s1.equals("Normal"))
 
-                txt.setTextColor(getResources().getColor(R.color.statusGreen));
+                txt.setTextColor(ContextCompat.getColor(this,R.color.statusGreen));
 
             else if (s1.equals("Fault"))
 
-                txt.setTextColor(getResources().getColor(R.color.statusRed));
+                txt.setTextColor(ContextCompat.getColor(this,R.color.statusRed));
 
             else
 
-                txt.setTextColor(getResources().getColor(R.color.foreground_normal_color));
+                txt.setTextColor(ContextCompat.getColor(this,R.color.foreground_normal_color));
 
 
             // Set System Message
             txt = (TextView)findViewById(R.id.SystemMessageText);
             if (txt != null) {
 
-                String s2 = status.controllerInfo.systemMessage;
+                String s2 = status.mControllerInfo.systemMessage;
 
                 // Set System Message Text
                 txt.setText(s2);
@@ -514,29 +920,71 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
                 } else {
 
-                    txt.setTextColor(getResources().getColor(R.color.foreground_normal_color));
+                    txt.setTextColor(ContextCompat.getColor(this,R.color.foreground_normal_color));
                     txt.setBackgroundColor(Color.YELLOW);
                 }
             }
         }
     }
 
+    /**
+     * 更新当前程序名
+     * @param status 状态
+     */
     private void updateControllerStatus_CurrentProgram(DeviceStatus status) {
 
-        if (status.controllerInfo != null) {
+        if (status.mControllerInfo != null) {
 
             // Set System Status
-            String s = status.controllerInfo.programName;
+            String s = status.mControllerInfo.programName;
             TextView txt = (TextView)findViewById(R.id.CurrentProgramText);
+            txt.setTextColor(ContextCompat.getColor(this,R.color.foreground_normal));
             if (txt != null) txt.setText(s);
 
         } else clearControllerStatus_CurrentProgram();
     }
 
+    /**
+     * 清除控制器程序名
+     */
     private void clearControllerStatus_CurrentProgram() {
 
         TextView txt = (TextView)findViewById(R.id.CurrentProgramText);
         if (txt != null) txt.setText("");
+    }
+
+    /**
+     * 更新进给
+     * @param status 状态
+     */
+    private void updateControllerStatus_PathFeedRate(DeviceStatus status) {
+
+        if (status.mControllerInfo!=null){
+
+            TextView pathFeedRateView= (TextView) findViewById(R.id.pathFeedRate);
+            if (pathFeedRateView!=null){
+                pathFeedRateView.setText(status.mControllerInfo.pathFeedRate);
+            }
+        }else {
+            clearControllerStatus_PathFeedRate();
+        }
+    }
+
+    /**
+     * 清除进给
+     */
+    private void clearControllerStatus_PathFeedRate() {
+
+        TextView pathFeedRateView= (TextView) findViewById(R.id.pathFeedRate);
+        if (pathFeedRateView!=null){
+            pathFeedRateView.setText("");
+        }
+    }
+
+
+    public void refresh() {
+
+        if (deviceStatus != null) new GetDeviceStatus(this, deviceStatus.uniqueId).execute();
     }
 
 
@@ -595,16 +1043,20 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         // Set Toolbar
         Toolbar deviceMonitorToolbar = (Toolbar) findViewById(R.id.DeviceMonitorToolbar);
 
-        // Set Title
-        deviceMonitorToolbar.setTitle("Device Details");
-        deviceMonitorToolbar.setTitleTextColor(Color.WHITE);
+        if (deviceMonitorToolbar!=null){
 
-        // Set Icon
-        deviceMonitorToolbar.setLogo(R.drawable.th_logo_toolbar);
+            // Set Title
+            deviceMonitorToolbar.setTitle("Device Details");
+            deviceMonitorToolbar.setTitleTextColor(Color.WHITE);
 
-        toolbar = deviceMonitorToolbar;
+            // Set Icon
+            deviceMonitorToolbar.setLogo(R.drawable.th_logo_toolbar);
 
-        setSupportActionBar(deviceMonitorToolbar);
+            toolbar = deviceMonitorToolbar;
+
+            setSupportActionBar(deviceMonitorToolbar);
+        }
+
     }
 
 
@@ -661,19 +1113,31 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         View headerView = navigationView.getHeaderView(0);
         if (headerView != null) {
 
-            /*
-            // Load Username
-            UserConfiguration userConfig = MyApplication.User;
-            if (userConfig != null) {
+            apiServerTextView= (TextView) headerView.findViewById(R.id.ApiServer);
+            updateIntervalTextView= (TextView) headerView.findViewById(R.id.UpdateInterval);
 
-                String username = TH_Tools.capitalizeFirst(userConfig.username);
+            if (apiServerTextView!=null){
 
-                TextView txt = (TextView) headerView.findViewById(R.id.Username);
-                if (txt != null) txt.setText(username);
+                if (ApiConfiguration.getSaveHost(this)!=null){
 
-//                new GetUserImage(headerView, userConfig).execute();
+                    apiServerTextView.setText(ApiConfiguration.getSaveHost(this));
+                }else {
+
+                    apiServerTextView.setText(ApiConfiguration.apiHost.toString());
+                }
             }
-            */
+
+
+            if (updateIntervalTextView!=null){
+
+                if (ApiConfiguration.getUpdateInterval(this)>=0){
+
+                    updateIntervalTextView.setText(String.valueOf(ApiConfiguration.getUpdateInterval(this)));
+                }else {
+
+                    updateIntervalTextView.setText(String.valueOf(ApiConfiguration.apiUpdateInterval));
+                }
+            }
         }
     }
 
@@ -684,11 +1148,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_logout) {
-
-//            logout();
-
-        } else if (id == R.id.nav_about) {
+        if (id == R.id.nav_about) {
 
             // Open the About Page
             startActivity(new Intent(getBaseContext(), About.class));

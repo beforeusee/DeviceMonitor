@@ -3,10 +3,20 @@ package com.example.zhengxiaohu.devicemonitor.device_details;
 import android.net.Uri;
 
 import com.example.zhengxiaohu.devicemonitor.api.ApiConfiguration;
-import com.example.zhengxiaohu.devicemonitor.api.data.ControllerInfo;
-import com.example.zhengxiaohu.devicemonitor.api.data.OeeInfo;
-import com.example.zhengxiaohu.devicemonitor.api.data.StatusInfo;
-import com.example.zhengxiaohu.devicemonitor.api.data.TimersInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesLinearXInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesLinearYInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesLinearZInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotaryAInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotaryBInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotaryCInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.Axes.AxesRotarySInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.ControllerInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.DescriptionInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.OeeInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.StatusInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.machine.TimersInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.sensor.chatter.ChatterVibrationInfo;
+import com.example.zhengxiaohu.devicemonitor.api.data.sensor.electricalEnergy.ElectricalEnergyInfo;
 import com.example.zhengxiaohu.devicemonitor.api.http.Requests;
 
 import org.joda.time.DateTime;
@@ -25,18 +35,39 @@ public class DeviceStatus {
 
     public String uniqueId;
 
-    public StatusInfo statusInfo;
-    public ControllerInfo controllerInfo;
-    public OeeInfo oeeInfo;
-    public TimersInfo timersInfo;
+    //机床
+    public DescriptionInfo mDescriptionInfo;
+    public ControllerInfo mControllerInfo;
+    public StatusInfo mStatusInfo;
+    public AxesLinearXInfo mXInfo;
+    public AxesLinearYInfo mYInfo;
+    public AxesLinearZInfo mZInfo;
+    public AxesRotarySInfo mSInfo;
+    public AxesRotaryAInfo mAInfo;
+    public AxesRotaryBInfo mBInfo;
+    public AxesRotaryCInfo mCInfo;
+
+    //传感器监测
+    public ChatterVibrationInfo mChatterVibrationInfo;
+    public ElectricalEnergyInfo mElectricalEnergyInfo;
 
     public DeviceStatus(){
 
         uniqueId=null;
-        statusInfo=new StatusInfo();
-        controllerInfo=new ControllerInfo();
-        oeeInfo=new OeeInfo();
-        timersInfo=new TimersInfo();
+        mStatusInfo =new StatusInfo();
+        mControllerInfo =new ControllerInfo();
+        mDescriptionInfo=new DescriptionInfo();
+
+        mXInfo=new AxesLinearXInfo();
+        mYInfo=new AxesLinearYInfo();
+        mZInfo=new AxesLinearZInfo();
+        mSInfo=new AxesRotarySInfo();
+        mAInfo=new AxesRotaryAInfo();
+        mBInfo=new AxesRotaryBInfo();
+        mCInfo=new AxesRotaryCInfo();
+
+        mChatterVibrationInfo=new ChatterVibrationInfo();
+        mElectricalEnergyInfo =new ElectricalEnergyInfo();
     }
 
     public static DeviceStatus get(String uniqueId){
@@ -49,11 +80,8 @@ public class DeviceStatus {
         String fromStr=fmt.print(from);
         String toStr=fmt.print(to);
 
-        //// TODO: 2017/12/27 此处去除了token和sender_id
-        String urlSuffix="data/get/?"+
-                "devices=[{\"unique_id\":\"" + uniqueId + "\"}]"+
-                "&from=" + fromStr + "&to=" + toStr +
-                "&command=" + "01111"; // Get Status, Controller, Oee, and Timers tables;
+
+        String urlSuffix=uniqueId+"/monitor";
 
         String url= Uri.withAppendedPath(ApiConfiguration.apiHost,urlSuffix).toString();
 
@@ -61,26 +89,32 @@ public class DeviceStatus {
         if (response!=null&&response.length()>0){
 
             try {
-                JSONArray jsonArray=new JSONArray(response);
 
-                if (jsonArray.length()>0){
+                JSONObject json=new JSONObject(response);
 
-                    JSONObject object=jsonArray.getJSONObject(0);
+                DeviceStatus deviceStatus=new DeviceStatus();
 
-                    DeviceStatus deviceStatus=new DeviceStatus();
+                deviceStatus.uniqueId=json.optString("device_id");
 
-                    deviceStatus.uniqueId=object.getString("unique_id");
+                deviceStatus.mStatusInfo =StatusInfo.parse(json);
 
-                    deviceStatus.statusInfo=StatusInfo.parse(object.getJSONObject("status"));
+                deviceStatus.mControllerInfo =ControllerInfo.parse(json);
 
-                    deviceStatus.controllerInfo=ControllerInfo.parse(object.getJSONObject("controller"));
+                deviceStatus.mDescriptionInfo=DescriptionInfo.parse(json);
 
-                    deviceStatus.oeeInfo=OeeInfo.parse(object.getJSONObject("oee"));
+                deviceStatus.mXInfo=AxesLinearXInfo.parse(json);
+                deviceStatus.mYInfo=AxesLinearYInfo.parse(json);
+                deviceStatus.mZInfo=AxesLinearZInfo.parse(json);
+                deviceStatus.mSInfo=AxesRotarySInfo.parse(json);
+                deviceStatus.mAInfo=AxesRotaryAInfo.parse(json);
+                deviceStatus.mBInfo=AxesRotaryBInfo.parse(json);
+                deviceStatus.mCInfo=AxesRotaryCInfo.parse(json);
 
-                    deviceStatus.timersInfo=TimersInfo.parse(object.getJSONObject("timers"));
+                deviceStatus.mChatterVibrationInfo=ChatterVibrationInfo.parse(json);
+                deviceStatus.mElectricalEnergyInfo=ElectricalEnergyInfo.parse(json);
 
-                    return deviceStatus;
-                }
+                return deviceStatus;
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -1,4 +1,4 @@
-package com.example.zhengxiaohu.devicemonitor.api.data;
+package com.example.zhengxiaohu.devicemonitor.api.data.machine;
 
 import org.json.JSONObject;
 
@@ -8,6 +8,7 @@ import org.json.JSONObject;
  */
 
 public class TimersInfo {
+
     public double total;
 
     public double active;

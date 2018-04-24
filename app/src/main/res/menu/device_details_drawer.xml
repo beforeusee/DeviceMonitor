@@ -12,14 +12,5 @@
             android:icon="@drawable/about_02"
             android:title="About" />
 
-        <group android:id="@+id/userOptions">
-
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/logout_01"
-                android:title="Logout" />
-
-        </group>
-
     </group>
 </menu>
