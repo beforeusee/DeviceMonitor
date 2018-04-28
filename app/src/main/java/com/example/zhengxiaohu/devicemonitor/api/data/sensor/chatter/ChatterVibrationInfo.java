@@ -22,17 +22,22 @@ public class ChatterVibrationInfo {
             String chatterVibration=json.optString("chatter_vibration");
 
             if (!chatterVibration.isEmpty()){
-                if (chatterVibration.equals("TRUE")){
+                if (chatterVibration.equals("FAULT")){
                     result.isChatterVibration=true;
                 }
-                if (chatterVibration.equals("FALSE")){
+                if (chatterVibration.equals("NORMAL")){
                     result.isChatterVibration=false;
+                }
+                if (chatterVibration.equals("UNAVAILABLE")){
+                    result.isChatterVibration=false;
+                    return null;
                 }
 
                 return result;
             }else {
 
                 result.isChatterVibration=false;
+                return null;
             }
 
         }

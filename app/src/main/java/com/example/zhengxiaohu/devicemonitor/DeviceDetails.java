@@ -356,9 +356,11 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
                     vibrationImageView.setImageResource(R.drawable.chatter_03);
                     vibrationImageView.setColorFilter(ContextCompat.getColor(this,R.color.statusRed));
                     vibrationTextView.setText("CHATTER");
+                    vibrationTextView.setTextColor(ContextCompat.getColor(this,R.color.statusRed));
                 }else {
                     vibrationImageView.setColorFilter(ContextCompat.getColor(this,R.color.statusGreen));
                     vibrationTextView.setText("NORMAL");
+                    vibrationTextView.setTextColor(ContextCompat.getColor(this,R.color.statusGreen));
                 }
             }
         }else {
@@ -384,7 +386,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 //            String angle=String.format("%.3f",angleDouble);
 
             if (cAngleTextView !=null){
-                if (!deviceStatus.mCInfo.mAngle.isEmpty()){
+                if (!(deviceStatus.mCInfo.mAngle.isEmpty()||deviceStatus.mCInfo.mAngle.equals("UNAVAILABLE"))){
                     cAngleTextView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mCInfo.mAngle)));
                 }else {
 
@@ -395,7 +397,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //旋转速度
             if (cAngularVelocity!=null){
 
-                if (!deviceStatus.mCInfo.mAngularVelocity.isEmpty()){
+                if (!(deviceStatus.mCInfo.mAngularVelocity.isEmpty()||deviceStatus.mCInfo.mAngularVelocity.equals("UNAVAILABLE"))){
 
                     cAngularVelocity.setText(String.format("%.0f",Float.valueOf(deviceStatus.mCInfo.mAngularVelocity)*60));
                 }else {
@@ -408,7 +410,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //负载
             if (cLoadView !=null){
 
-                if (!deviceStatus.mCInfo.mLoad.equals("")){
+                if (!(deviceStatus.mCInfo.mLoad.equals("")||deviceStatus.mCInfo.mLoad.equals("UNAVAILABLE"))){
 
                     cLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mCInfo.mLoad)/100);
                     cLoadView.invalidate();
@@ -438,7 +440,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 //            String angle=String.format("%.3f",angleDouble);
 
             if (bAngleTextView !=null){
-                if (!deviceStatus.mBInfo.mAngle.isEmpty()){
+                if (!(deviceStatus.mBInfo.mAngle.isEmpty()||deviceStatus.mBInfo.mAngle.equals("UNAVAILABLE"))){
                     bAngleTextView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mBInfo.mAngle)));
                 }else {
                     bAngleTextView.setText("");
@@ -449,7 +451,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //旋转速度
             if (bAngularVelocity!=null){
 
-                if (!deviceStatus.mBInfo.mAngularVelocity.isEmpty()){
+                if (!(deviceStatus.mBInfo.mAngularVelocity.isEmpty()||deviceStatus.mBInfo.mAngularVelocity.equals("UNAVAILABLE"))){
 
                     bAngularVelocity.setText(String.format("%.0f",Float.valueOf(deviceStatus.mBInfo.mAngularVelocity)*60));
                 }else {
@@ -461,7 +463,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //负载
             if (bLoadView !=null){
 
-                if (!deviceStatus.mBInfo.mLoad.equals("")){
+                if (!(deviceStatus.mBInfo.mLoad.equals("")||deviceStatus.mBInfo.mLoad.equals("UNAVAILABLE"))){
                     bLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mBInfo.mLoad)/100);
                     bLoadView.invalidate();
                 }else {
@@ -486,7 +488,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 //            String angle=String.format("%.3f",angleDouble);
             if (aAngleTextView !=null){
 
-                if (!deviceStatus.mAInfo.mAngle.isEmpty()){
+                if (!(deviceStatus.mAInfo.mAngle.isEmpty()||deviceStatus.mAInfo.mAngle.equals("UNAVAILABLE"))){
 
                     aAngleTextView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mAInfo.mAngle)));
                 }else {
@@ -497,7 +499,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //旋转速度
             if (aAngularVelocity !=null){
 
-                if (!deviceStatus.mAInfo.mAngularVelocity.isEmpty()){
+                if (!(deviceStatus.mAInfo.mAngularVelocity.isEmpty()||deviceStatus.mAInfo.mAngularVelocity.equals("UNAVAILABLE"))){
 
                     aAngularVelocity.setText(String.format("%.0f",Float.valueOf(deviceStatus.mAInfo.mAngularVelocity)*60));
                 }else {
@@ -509,7 +511,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //负载
             if (aLoadView!=null){
 
-                if (!deviceStatus.mAInfo.mLoad.equals("")){
+                if (!(deviceStatus.mAInfo.mLoad.equals("")||deviceStatus.mAInfo.mLoad.equals("UNAVAILABLE"))){
                     aLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mAInfo.mLoad)/100);
                     aLoadView.invalidate();
                 }else {
@@ -532,7 +534,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //主轴转速
             if (spindleVelocityView!=null){
 
-                if (!deviceStatus.mSInfo.mRotaryVelocity.isEmpty()){
+                if (!(deviceStatus.mSInfo.mRotaryVelocity.isEmpty()||deviceStatus.mSInfo.mRotaryVelocity.equals("UNAVAILABLE"))){
 
                     spindleVelocityView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mSInfo.mRotaryVelocity)));
                 }else {
@@ -542,7 +544,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
             //主轴负载
             if (sLoadView!=null){
-                if (!deviceStatus.mSInfo.mLoad.equals("")){
+                if (!(deviceStatus.mSInfo.mLoad.equals("")||deviceStatus.mSInfo.mLoad.equals("UNAVAILABLE"))){
                     sLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mSInfo.mLoad)/100);
                     sLoadView.invalidate();
                 }else {
@@ -565,7 +567,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //Z轴位置
             if (zPosView!=null){
 
-                if (!deviceStatus.mZInfo.position.isEmpty()){
+                if (!(deviceStatus.mZInfo.position.isEmpty()||deviceStatus.mZInfo.position.equals("UNAVAILABLE"))){
 
                     zPosView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mZInfo.position)));
                 }else {
@@ -576,7 +578,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //z轴速度
             if (zAxisFeedRateView!=null){
 
-                if (!deviceStatus.mZInfo.axisFeedRate.isEmpty()){
+                if (!(deviceStatus.mZInfo.axisFeedRate.isEmpty()||deviceStatus.mZInfo.axisFeedRate.equals("UNAVAILABLE"))){
 
                     zAxisFeedRateView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mZInfo.axisFeedRate)*60));
                 }else {
@@ -587,7 +589,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //z轴负载
             if (zLoadView!=null){
 
-                if (!deviceStatus.mZInfo.load.equals("")){
+                if (!(deviceStatus.mZInfo.load.equals("")||deviceStatus.mZInfo.load.equals("UNAVAILABLE"))){
                     zLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mZInfo.load)/100);
                     zLoadView.invalidate();
                 }else {
@@ -611,7 +613,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //Y轴位置
             if (yPosView!=null){
 
-                if (!deviceStatus.mYInfo.position.isEmpty()){
+                if (!(deviceStatus.mYInfo.position.isEmpty()||deviceStatus.mYInfo.position.equals("UNAVAILABLE"))){
 
                     yPosView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mYInfo.position)));
                 }else {
@@ -622,7 +624,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //Y轴速度
             if (yAxisFeedRateView!=null){
 
-                if (!deviceStatus.mYInfo.axisFeedRate.isEmpty()){
+                if (!(deviceStatus.mYInfo.axisFeedRate.isEmpty()||deviceStatus.mYInfo.axisFeedRate.equals("UNAVAILABLE"))){
 
                     yAxisFeedRateView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mYInfo.axisFeedRate)*60));
                 }else {
@@ -633,7 +635,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
             //y轴负载
             if (yLoadView!=null){
 
-                if (!deviceStatus.mYInfo.load.equals("")){
+                if (!(deviceStatus.mYInfo.load.equals("")||deviceStatus.mYInfo.load.equals("UNAVAILABLE"))){
                     yLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mYInfo.load)/100);
                     yLoadView.invalidate();
                 }else {
@@ -657,7 +659,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
             if (xPosView!=null){
 
-                if (!deviceStatus.mXInfo.position.isEmpty()){
+                if (!(deviceStatus.mXInfo.position.isEmpty()||deviceStatus.mXInfo.position.equals("UNAVAILABLE"))){
 
                     xPosView.setText(String.format("%.3f",Float.valueOf(deviceStatus.mXInfo.position)));
                 }else {
@@ -669,7 +671,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
             if (xAxisFeedRateView!=null){
 
-                if (!deviceStatus.mXInfo.axisFeedRate.isEmpty()){
+                if (!(deviceStatus.mXInfo.axisFeedRate.isEmpty()||deviceStatus.mXInfo.axisFeedRate.equals("UNAVAILABLE"))){
 
                     xAxisFeedRateView.setText(String.format("%.0f",Float.valueOf(deviceStatus.mXInfo.axisFeedRate)*60));
                 }else {
@@ -681,7 +683,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
             if (xLoadView!=null){
 
-                if (!deviceStatus.mXInfo.load.equals("")){
+                if (!(deviceStatus.mXInfo.load.equals("")||deviceStatus.mXInfo.load.equals("UNAVAILABLE"))){
                     xLoadView.setCurrentStatus(Float.valueOf(deviceStatus.mXInfo.load)/100);
                     xLoadView.invalidate();
                 }else {
@@ -886,11 +888,11 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
 
             txt.setText(s1);
 
-            if (s1.equals("Normal"))
+            if (s1.equals("NORMAL"))
 
                 txt.setTextColor(ContextCompat.getColor(this,R.color.statusGreen));
 
-            else if (s1.equals("Fault"))
+            else if (s1.equals("FAULT"))
 
                 txt.setTextColor(ContextCompat.getColor(this,R.color.statusRed));
 
@@ -913,7 +915,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
                 else txt.setVisibility(View.VISIBLE);
 
                 // Set Colors
-                if (!s1.equals("Normal")) {
+                if (!s1.equals("NORMAL")) {
 
                     txt.setTextColor(Color.WHITE);
                     txt.setBackgroundColor(Color.RED);

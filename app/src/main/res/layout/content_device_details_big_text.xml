@@ -151,7 +151,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -226,7 +226,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10sp"
                             android:textColor="@color/statusRed"
-                            android:textSize="18sp" />
+                            android:textSize="20sp" />
 
                     </RelativeLayout>
 
@@ -245,7 +245,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -267,7 +267,7 @@
                             android:layout_below="@+id/EmergencyStopImage"
                             android:layout_centerHorizontal="true"
                             android:textColor="@color/statusRed"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                     </RelativeLayout>
                 </LinearLayout>
@@ -296,7 +296,7 @@
                     android:text="Controller Mode"
                     android:id="@+id/textView2"
                     android:textColor="#888"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -333,7 +333,7 @@
                             android:layout_below="@+id/ControllerMode_Auto"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:layout_marginTop="-5dp" />
 
                     </RelativeLayout>
@@ -365,7 +365,7 @@
                             android:layout_below="@+id/ControllerMode_MDI"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:layout_marginTop="-5dp" />
 
                     </RelativeLayout>
@@ -397,7 +397,7 @@
                             android:layout_below="@+id/ControllerMode_SBLK"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:layout_marginTop="-5dp" />
 
                     </RelativeLayout>
@@ -429,7 +429,7 @@
                             android:layout_below="@+id/ControllerMode_Manaul"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:layout_marginTop="-5dp" />
 
                     </RelativeLayout>
@@ -461,7 +461,7 @@
                             android:layout_below="@+id/ControllerMode_Edit"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:layout_marginTop="-5dp" />
 
                     </RelativeLayout>
@@ -495,7 +495,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
                     android:textColor="#888"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -507,7 +507,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/statusRed"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </RelativeLayout>
 
             <View
@@ -534,7 +534,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
                     android:textColor="#888"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -546,7 +546,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/foreground_normal_color"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
             </RelativeLayout>
 
             <View
@@ -584,7 +584,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -595,7 +595,7 @@
                             android:layout_below="@id/FeedRateView"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="16sp" />
+                            android:textSize="18sp" />
                         1
                         <TextView
                             android:layout_width="match_parent"
@@ -606,7 +606,7 @@
                             android:gravity="center"
                             android:id="@+id/pathFeedRate"
                             android:text="[进给]"
-                            android:textSize="20sp"/>
+                            android:textSize="22sp"/>
 
                     </RelativeLayout>
 
@@ -624,7 +624,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -635,7 +635,7 @@
                             android:layout_below="@id/SVelocityView"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="16sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -646,7 +646,7 @@
                             android:gravity="center"
                             android:id="@+id/spindleVelocity"
                             android:text="[转速]"
-                            android:textSize="20sp"/>
+                            android:textSize="22sp"/>
 
                     </RelativeLayout>
 <!--
@@ -684,7 +684,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -707,7 +707,7 @@
                             android:layout_below="@id/SpindleVibrationImage"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="18sp" />
+                            android:textSize="20sp" />
                     </RelativeLayout>
 
 <!--
@@ -734,7 +734,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                         <com.example.zhengxiaohu.devicemonitor.view.DialChartSLoadView
                             android:layout_width="125dp"
@@ -776,7 +776,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="进给轴"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"
                         />
@@ -787,7 +787,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="位置"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"
                         />
@@ -798,7 +798,7 @@
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="速度"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"
                         />
@@ -809,7 +809,7 @@
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="负载"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"
                         />
@@ -838,7 +838,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="mm(deg)"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"
                         />
@@ -849,7 +849,7 @@
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="mm(deg)/min"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"
                         />
@@ -860,7 +860,7 @@
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text=""
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"
                         />
@@ -879,7 +879,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="X"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -891,7 +891,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[XPos]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -903,7 +903,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[XVe]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -937,7 +937,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="Y"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -949,7 +949,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[YPos]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -961,7 +961,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[YVe]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -995,7 +995,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="Z"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1007,7 +1007,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[ZPos]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1019,7 +1019,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[ZVe]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1053,7 +1053,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="A"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1065,7 +1065,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[aAngle]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1077,7 +1077,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[AAV]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1111,7 +1111,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="B"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1123,7 +1123,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[bAngle]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1135,7 +1135,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[BAV]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1169,7 +1169,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="C"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1181,7 +1181,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[cAngle]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1193,7 +1193,7 @@
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:text="[CAV]"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:padding="0dp"
                         android:layout_margin="0.5dp"/>
 
@@ -1250,7 +1250,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -1261,7 +1261,7 @@
                             android:layout_below="@id/ElectricalEnergyTitle"
                             android:layout_centerHorizontal="true"
                             android:textColor="#888"
-                            android:textSize="16sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -1273,7 +1273,7 @@
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
                             android:layout_marginBottom="0dp"
-                            android:textSize="20sp" />
+                            android:textSize="22sp" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -1291,7 +1291,7 @@
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
                             android:textColor="#888"
-                            android:textSize="20sp"/>
+                            android:textSize="22sp"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -1363,7 +1363,7 @@
                     android:text="System Status"
                     android:id="@+id/textView15"
                     android:textColor="#888"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -1373,7 +1373,7 @@
                     android:id="@+id/SystemStatusText"
                     android:textColor="@color/statusGreen"
                     android:layout_marginTop="5sp"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -1388,7 +1388,7 @@
                     android:paddingRight="10sp"
                     android:paddingTop="2sp"
                     android:paddingBottom="2sp"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
