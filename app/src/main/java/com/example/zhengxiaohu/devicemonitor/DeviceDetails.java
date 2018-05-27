@@ -358,6 +358,7 @@ public class DeviceDetails extends AppCompatActivity implements NavigationView.O
                     vibrationTextView.setText("CHATTER");
                     vibrationTextView.setTextColor(ContextCompat.getColor(this,R.color.statusRed));
                 }else {
+                    vibrationImageView.setImageResource(R.drawable.nochatter_03);
                     vibrationImageView.setColorFilter(ContextCompat.getColor(this,R.color.statusGreen));
                     vibrationTextView.setText("NORMAL");
                     vibrationTextView.setTextColor(ContextCompat.getColor(this,R.color.statusGreen));
