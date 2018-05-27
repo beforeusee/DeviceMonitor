@@ -59,12 +59,19 @@ public class StatusHandler implements Runnable {
 
         boolean isConnected;
 
-        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) isConnected = true;
-        else isConnected = false;
+        boolean isWifi;
+        boolean isEthernet;
 
-        boolean isWifi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
-        boolean isEthernet = activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET;
-
+        if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()){
+            isConnected = true;
+            isWifi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+            isEthernet = activeNetwork.getType() == ConnectivityManager.TYPE_ETHERNET;
+        }
+        else {
+            isConnected = false;
+            isWifi=false;
+            isEthernet=false;
+        }
 
         return isConnected && (isWifi || isEthernet);
     }
